@@ -1,0 +1,1 @@
+User {{ Auth::user()->email }} with IP: {{ request()->ip() }}
