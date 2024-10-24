@@ -3,17 +3,16 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CategoryResource\Pages;
-use App\Filament\Resources\CategoryResource\RelationManagers;
 use App\Models\Category;
 use CodeWithDennis\FilamentSelectTree\SelectTree;
-use Filament\Forms;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CategoryResource extends Resource
 {
@@ -25,17 +24,23 @@ class CategoryResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->required(),
+                Section::make('Category Details')
+                    ->schema([
+                        Grid::make(2)
+                            ->schema([
+                                TextInput::make('name')
+                                    ->required(),
 
-                SelectTree::make('parent_id')
-                    ->label('Category')
-                    ->withCount()
-                    ->searchable()
-                    ->independent(false)
-                    ->enableBranchNode()
-                    ->placeholder(_('Please select a category'))
-                    ->relationship('parent', 'name', 'parent_id')
+                                SelectTree::make('parent_id')
+                                    ->label('Category')
+                                    ->withCount()
+                                    ->searchable()
+                                    ->independent(false)
+                                    ->enableBranchNode()
+                                    ->placeholder(_('Please select a category'))
+                                    ->relationship('parent', 'name', 'parent_id')
+                            ])
+                    ])
             ]);
     }
 
@@ -43,12 +48,15 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label('Name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('parent.name')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('parent.name')
                     ->label('Category')
+                    ->sortable(),
             ])
+            ->defaultSort('name')
             ->filters([
                 //
             ])

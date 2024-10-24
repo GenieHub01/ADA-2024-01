@@ -9,8 +9,6 @@ class TempImage extends Model
 {
     use HasFactory;
 
-    protected $table = 'TempImage';
-
     protected $fillable = [
         'image', 
         'create_time',

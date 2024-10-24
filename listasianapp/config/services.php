@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'vk' => [
+        'access_token' => env('VK_ACCESS_TOKEN'),
+        'cache_time' => 3600,
+    ],
+
 ];

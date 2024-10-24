@@ -82,7 +82,7 @@ function processGeodata(position) {
         })
         .done(function(data) {
 
-            $.each(data.results[0].address_components, function(index, value) {
+            $.each(data.response[0].address_components, function(index, value) {
 
                 if (value['types'].indexOf('country') != -1) {
                     resCountry = value.long_name;

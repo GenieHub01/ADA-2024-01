@@ -3,40 +3,40 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\GeoFormRequest;
 use App\Services\GeoService;
 use Illuminate\Http\Request;
 
 class GeoController extends Controller
 {
-    // public function handleGeoForm(GeoFormRequest $request)
-    // {
-    //     $validated = $request->validated();
+    protected $GeoService;
 
-    //     return redirect()->back()->with('success', 'Geo form submitted successfully!');
-    // }
+    public function __construct(GeoService $geoService)
+    {
+        $this->GeoService = $geoService;
+    }
 
-    // public function countries(Request $request)
-    // {
-    //     $data = GeoService::getCountries();
+    public function countries()
+    {
+        $countries = $this->GeoService->getCountries();
+        if ($countries->isEmpty()) {
+            return response()->json(['message' => 'No countries found'], 404);
+        }
+        return response()->json($countries);
+    }
 
-    //     return view('geo.countries', compact('data'));
-    // }
+    public function regions(Request $request)
+    {
+        $countryId = $request->input('country_id');
+        $regions = $this->GeoService->getRegions($countryId);
+        return response()->json($regions);
+    }
 
-    // public function regions(Request $request)
-    // {
-    //     $countryId = $request->input('country_id');
-    //     $data = GeoService::getRegions($countryId);
-
-    //     return view('geo.regions', compact('data'));
-    // }
-
-    // public function cities(Request $request)
-    // {
-    //     $countryId = $request->input('country_id');
-    //     $regionId = $request->input('region_id');
-    //     $data = GeoService::getCities($countryId, $regionId);
-
-    //     return view('geo.cities', compact('data'));
-    // }
+    public function cities(Request $request)
+    {
+        $countryId = $request->input('country_id');
+        $regionId = $request->input('region_id');
+        $cities = $this->GeoService->getCities($countryId, $regionId);
+        return response()->json($cities);
+    }
 }
+
