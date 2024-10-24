@@ -10,8 +10,6 @@ class Paylog extends Model
 {
     use HasFactory;
 
-    protected $table = 'paylog';
-
     protected $fillable = [
         'transaction_id',
         'user_id',

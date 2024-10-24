@@ -4,115 +4,99 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class GeoService
 {
-    public static function getCountries()
+    protected $accessToken;
+    protected $cacheTime;
+
+    public function __construct()
+    {
+        $this->accessToken = config('services.vk.access_token');
+        $this->cacheTime = config('services.vk.cache_time', 3600);
+    }
+
+    public function getCountries()
     {
         $key = 'countries';
-        
-        return Cache::remember($key, config('geo.cache_time'), function () {
-            $url = sprintf(
-                'https://api.vk.com/method/database.getCountries?v=5.21&need_all=1&count=1000&lang=en&access_token=%s',
-                config('services.vk.access_token')
-            );
-            
-            $response = Http::get($url);
-            
-            if (!$response->successful()) {
+        return Cache::remember($key, $this->cacheTime, function () {
+            $url = sprintf('https://api.vk.com/method/database.getCountries?v=5.21&need_all=1&count=1000&lang=en&access_token=%s',
+                $this->accessToken);
+
+            Log::info('Sending request to: ' . $url);
+            $response = Http::timeout(120)->get($url);
+            Log::info('Response status: ' . $response->status());
+
+            if ($response->failed() || !isset($response['response'])) {
                 return [];
             }
-            
+    
             $json = $response->json();
-            
+    
+            if (!isset($json['response']['items'])) {
+                return [];
+            }
+    
             return collect($json['response']['items'])->pluck('title', 'id')->toArray();
         });
     }
 
-    public static function getCountryName($country_id)
+    public function getRegions($countryId)
     {
-        $countries = self::getCountries();
-        return $countries[$country_id] ?? null;
-    }
-
-    public static function getRegions($country_id)
-    {
-        if ($country_id == 0) {
+        if ($countryId == 0) {
             return [];
         }
-
-        $key = 'regions_' . $country_id;
-        
-        return Cache::remember($key, config('geo.cache_time'), function () use ($country_id) {
-            $url = sprintf(
-                'https://api.vk.com/method/database.getRegions?v=5.21&count=1000&lang=en&country_id=%s&access_token=%s',
-                $country_id,
-                config('services.vk.access_token')
-            );
-
-            $response = Http::get($url);
-
-            if (!$response->successful()) {
+    
+        $key = 'regions_' . $countryId;
+        return Cache::remember($key, $this->cacheTime, function () use ($countryId) {
+            $url = sprintf('https://api.vk.com/method/database.getRegions?v=5.21&count=1000&lang=en&country_id=%s&access_token=%s',
+                $countryId, $this->accessToken);
+    
+            $response = Http::timeout(120)->get($url);
+    
+            if ($response->failed()) {
+                Log::error('Failed to fetch regions from VK API', ['url' => $url, 'response' => $response->body()]);
                 return [];
             }
-
+    
             $json = $response->json();
-            
+    
+            if (!isset($json['response']['items'])) {
+                Log::error('Unexpected VK API response structure', ['url' => $url, 'response' => $json]);
+                return [];
+            }
+    
             return collect($json['response']['items'])->pluck('title', 'id')->toArray();
         });
     }
 
-    public static function getRegionName($country_id, $region_id)
+    public function getCities($countryId, $regionId)
     {
-        $regions = self::getRegions($country_id);
-        return $regions[$region_id] ?? null;
-    }
-
-    public static function getCities($country_id, $region_id)
-    {
-        if ($country_id == 0) {
+        if ($countryId == 0) {
             return [];
         }
-
-        $key = 'cities_' . $country_id . '_' . $region_id;
-
-        return Cache::remember($key, config('geo.cache_time'), function () use ($country_id, $region_id) {
-            $items = [];
-            $offset = 0;
-            $count = 1000;
-
-            while (true) {
-                $url = sprintf(
-                    "https://api.vk.com/method/database.getCities?v=5.21&need_all=0&count=1000&lang=en&country_id=%s&region_id=%s&access_token=%s&offset=%d",
-                    $country_id,
-                    $region_id,
-                    config('services.vk.access_token'),
-                    $offset
-                );
-
-                $response = Http::get($url);
-
-                if (!$response->successful()) {
-                    return $items;
-                }
-
-                $json = $response->json();
-                $items = array_merge($items, collect($json['response']['items'])->pluck('title', 'id')->toArray());
-
-                if ($offset >= $json['response']['count']) {
-                    break;
-                }
-
-                $offset += $count;
+    
+        $key = 'cities_' . $countryId . '_' . $regionId;
+        return Cache::remember($key, $this->cacheTime, function () use ($countryId, $regionId) {
+            $url = sprintf(
+                "https://api.vk.com/method/database.getCities?v=5.21&need_all=0&count=1000&lang=en&country_id=%s&region_id=%s&access_token=%s",
+                $countryId, $regionId, $this->accessToken
+            );
+    
+            $response = Http::timeout(120)->get($url);
+    
+            if ($response->failed() || !isset($response['response'])) {
+                return [];
             }
-
-            return $items;
+    
+            $json = $response->json();
+    
+            if (!isset($json['response']['items'])) {
+                return [];
+            }
+    
+            return collect($json['response']['items'])->pluck('title', 'id')->toArray();
         });
-    }
-
-    public static function getCityName($country_id, $region_id, $city_id)
-    {
-        $cities = self::getCities($country_id, $region_id);
-        return $cities[$city_id] ?? null;
     }
 }

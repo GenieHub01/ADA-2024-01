@@ -11,7 +11,8 @@ use App\Http\Controllers\Api\GeoController;
 use App\Http\Controllers\Api\PackagePriceController;
 use App\Http\Controllers\Api\PaylogController;
 use App\Http\Controllers\Api\UserController;
-
+use App\Http\Middleware\CheckAccessToken;
+use App\Http\Middleware\ContentSecurityPolicy;
 
 Route::get('/', function () {
     return view('welcome');
@@ -49,16 +50,14 @@ Route::get('/', function () {
 // Route::get('/category', [CategoryController::class, 'index'])->name('category.index');
 // Route::get('/category/{code}/paid-adverts', [CategoryController::class, 'paidAdverts'])->name('category.paidAdverts');
 
-// //Geo Route
-// Route::get('/geo-form', function () {return view('geo-form');})->name('geo.form');
-// Route::post('/geo-form', [GeoController::class, 'handleGeoForm'])->name('geo.form.submit');
-// Route::middleware(['postOnly'])->group(function () {
-//     Route::post('/geo/countries', [GeoController::class, 'countries'])->name('geo.countries');
-//     Route::post('/geo/regions', [GeoController::class, 'regions'])->name('geo.regions');
-//     Route::post('/geo/cities', [GeoController::class, 'cities'])->name('geo.cities');
-// });
+//Geo Route
+Route::middleware(CheckAccessToken::class, ContentSecurityPolicy::class)->group(function () {
+    Route::get('/countries', [GeoController::class, 'countries'])->name('countries');
+    Route::post('/regions', [GeoController::class, 'regions'])->name('regions');
+    Route::post('/cities', [GeoController::class, 'cities'])->name('cities');
+});
 
-// //PackagePrice Price
+//PackagePrice Price
 // Route::middleware(['auth', 'can:admin-role'])->group(function () {
 //     Route::get('/package-prices', [PackagePriceController::class, 'index'])->name('package_prices.index');
 //     Route::get('/package-prices/create', [PackagePriceController::class, 'create'])->name('package_prices.create');
