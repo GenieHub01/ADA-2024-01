@@ -3,23 +3,19 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\AdvertResource\Pages;
-use App\Filament\Resources\AdvertResource\RelationManagers;
 use App\Models\Advert;
 use CodeWithDennis\FilamentSelectTree\SelectTree;
-use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Http;
 use Filament\Tables;
-use Filament\Tables\Columns\BooleanColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AdvertResource extends Resource
 {
@@ -31,15 +27,43 @@ class AdvertResource extends Resource
     {
         return $form
             ->schema([
-                // Select::make('user_id')
-                //     ->relationship('user', 'name')
-                //     ->label('User')
+                // Select::make('country_id')
+                //     ->label('Country')
+                //     ->options(function () {
+                //         $response = Http::get(route('countries'));
+                //         return $response->successful() ? $response->json() : [];
+                //     })
+                //     ->reactive()
+                //     ->afterStateUpdated(fn ($state, callable $set) => $set('region_id', null))
                 //     ->required(),
 
-                TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                
+                // Select::make('region_id')
+                //     ->label('Region')
+                //     ->options(function ($get) {
+                //         $countryId = $get('country_id');
+                //         if ($countryId) {
+                //             $response = Http::post(route('regions'), ['country_id' => $countryId]);
+                //             return $response->successful() ? $response->json() : [];
+                //         }
+                //         return [];
+                //     })
+                //     ->reactive()
+                //     ->afterStateUpdated(fn ($state, callable $set) => $set('city_id', null))
+                //     ->required(),
+
+                // Select::make('city_id')
+                //     ->label('City')
+                //     ->options(function ($get) {
+                //         $countryId = $get('country_id');
+                //         $regionId = $get('region_id');
+                //         if ($countryId && $regionId) {
+                //             $response = Http::post(route('cities'), ['country_id' => $countryId, 'region_id' => $regionId]);
+                //             return $response->successful() ? $response->json() : [];
+                //         }
+                //         return [];
+                //     })
+                //     ->required(),
+
                 Repeater::make('category')
                     ->relationship('categoriesMany')
                     ->label('Category')
@@ -50,6 +74,10 @@ class AdvertResource extends Resource
                             ->placeholder(_('Please select a category'))
                             ->required(),
                     ]),
+                    
+                TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
 
                 TextInput::make('address')
                     ->required()
@@ -57,26 +85,6 @@ class AdvertResource extends Resource
                 
                 TextInput::make('postcode')
                     ->required(),
-                
-                // Select::make('country')
-                //     ->relationship('country', 'name')
-                //     ->label('Country')
-                //     ->required(),
-
-                // Select::make('region')
-                //     ->relationship('subRegion', 'name')
-                //     ->label('Sub Region')
-                //     ->required(),
-
-                // Select::make('sub_region')
-                //     ->relationship('subRegion', 'name')
-                //     ->label('Sub Region')
-                //     ->required(),
-
-                // Select::make('city')
-                //     ->relationship('subRegion', 'name')
-                //     ->label('Sub Region')
-                //     ->required(),
 
                 TextInput::make('telephone')
                     ->required(),
@@ -119,13 +127,13 @@ class AdvertResource extends Resource
     
                 Select::make('package')
                     ->relationship('price', 'name')
-                    ->label('Price Package')
+                    ->label('Price')
                     ->required(),
                 
-                // FileUpload::make('image')
-                //     ->label('Advert Image')
-                //     ->directory('adverts')
-                //     ->image(),
+                FileUpload::make('image')
+                    ->label('Advert Image')
+                    ->directory('adverts')
+                    ->image(),
             ]);
     }
 
@@ -133,26 +141,62 @@ class AdvertResource extends Resource
     {
         return $table
             ->columns([
-                // TextColumn::make('name')
-                //     ->label('Advert Name')
-                //     ->sortable()
-                //     ->searchable(),
-                // TextColumn::make('user.name')
-                //     ->label('User')
-                //     ->sortable(),
-                // IconColumn::make('active')
-                //     ->boolean()
-                //     ->label('Active')
-                //     ->trueIcon('heroicon-o-badge-check')
-                //     ->falseIcon('heroicon-o-x-circle'),
-                // IconColumn::make('paid')
-                //     ->boolean()
-                //     ->label('Paid')
-                //     ->trueIcon('heroicon-o-badge-check')
-                //     ->falseIcon('heroicon-o-x-circle'),
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable()
+                    ->searchable()
+                    ->size('small'),
+                TextColumn::make('user.email')
+                    ->label('User Email')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('name')
+                    ->label('Advert Name')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('manager_name')
+                    ->label('Manager Name')
+                    ->sortable(),
+                TextColumn::make('mobile')
+                    ->label('Mobile')
+                    ->sortable(),
+                TextColumn::make('email')
+                    ->label('Email')
+                    ->sortable(),
+                TextColumn::make('telephone')
+                    ->label('Telephone')
+                    ->sortable(),
+                IconColumn::make('seo1')
+                    ->boolean()
+                    ->label('SEO 1')
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle'),
+                IconColumn::make('seo2')
+                    ->boolean()
+                    ->label('SEO 2')
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle'),
+                IconColumn::make('active')
+                    ->boolean()
+                    ->label('Active')
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle'),
+                IconColumn::make('paid')
+                    ->boolean()
+                    ->label('Paid')
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle'),
+                TextColumn::make('start_date')
+                    ->label('Start Date')
+                    ->date()
+                    ->sortable(),
+                TextColumn::make('expiry_date')
+                    ->label('Expiry Date')
+                    ->date()
+                    ->sortable(),
             ])
             ->filters([
-                //
+                // Add any filter logic here
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

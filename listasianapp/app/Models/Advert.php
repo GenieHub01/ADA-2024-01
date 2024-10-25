@@ -103,8 +103,8 @@ class Advert extends Model
 
         static::saving(function ($adverts) {
             $geoServices = new GeoService();
-            $adverts->country_name = $geoServices->getCountryName($adverts->country_id);
-            $adverts->city_name = $geoServices->getCityName($adverts->country_id, $adverts->region_id, $adverts->city_id);
+            $adverts->country_name = $geoServices->getCountries($adverts->country_id);
+            $adverts->city_name = $geoServices->getCities($adverts->country_id, $adverts->region_id, $adverts->city_id);
             $adverts->saveImage();
         });
 

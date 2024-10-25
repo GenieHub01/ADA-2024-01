@@ -3,16 +3,13 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PriceResource\Pages;
-use App\Filament\Resources\PriceResource\RelationManagers;
 use App\Models\Price;
-use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PriceResource extends Resource
 {
@@ -39,10 +36,13 @@ class PriceResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('Name')
+                TextColumn::make('name')
+                    ->label('Name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('Value'),
-                Tables\Columns\TextColumn::make('Description')
+                TextColumn::make('value')
+                    ->label('Value'),
+                TextColumn::make('description')
+                    ->label('Description')
             ])
             ->filters([
                 //

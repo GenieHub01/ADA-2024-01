@@ -11,8 +11,6 @@ class Plan extends Model
 {
     use HasFactory;
 
-    protected $table = 'plan';
-
     protected $fillable = [
         'stripe_id',
         'name',
