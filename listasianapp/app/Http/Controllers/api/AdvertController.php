@@ -12,41 +12,41 @@ use Illuminate\Support\Facades\Mail;
 
 class AdvertController extends Controller
 {
-    // public function view($id)
-    // {
-    //     $advert = Advert::findOrFail($id);
+    public function view($id)
+    {
+        $advert = Advert::findOrFail($id);
 
-    //     if (!Gate::allows('update', $advert)) {
-    //         abort(403, 'Access denied');
-    //     }
+        if (!Gate::allows('update', $advert)) {
+            abort(403, 'Access denied');
+        }
 
-    //     if (request()->isMethod('post')) {
-    //         $cardInfo = strtolower(request('first-name') . request('last-name') . request('number') . request('cvc') . request('exp-month') . request('exp-year'));
-    //         $cardHash = md5($cardInfo);
+        if (request()->isMethod('post')) {
+            $cardInfo = strtolower(request('first-name') . request('last-name') . request('number') . request('cvc') . request('exp-month') . request('exp-year'));
+            $cardHash = md5($cardInfo);
 
-    //         $advert->purchase(request('stripeToken'), request('plan_id'), $cardHash);
+            $advert->purchase(request('stripeToken'), request('plan_id'), $cardHash);
 
-    //         session()->flash('success', 'Thank you for your payment, Your advert will be live shortly');
-    //         return redirect()->route('advert.thanks');
-    //     }
+            session()->flash('success', 'Thank you for your payment, Your advert will be live shortly');
+            return redirect()->route('advert.thanks');
+        }
 
-    //     return view('adverts.view', compact('advert'));
-    // }
+        return view('adverts.view', compact('advert'));
+    }
 
-    // public function display($id)
-    // {
-    //     $advert = Advert::find($id);
+    public function display($id)
+    {
+        $advert = Advert::find($id);
 
-    //     if (!$advert) {
-    //         return redirect()->route('category.index');
-    //     }
+        if (!$advert) {
+            return redirect()->route('category.index');
+        }
 
-    //     if (request()->getRequestUri() != $advert->getSeoUrl()) {
-    //         return redirect($advert->getSeoUrl(), 301);
-    //     }
+        if (request()->getRequestUri() != $advert->getSeoUrl()) {
+            return redirect($advert->getSeoUrl(), 301);
+        }
 
-    //     return view('adverts.view', compact('advert'));
-    // }
+        return view('adverts.view', compact('advert'));
+    }
 
     // public function create(Request $request)
     // {
@@ -145,15 +145,15 @@ class AdvertController extends Controller
     //     return redirect()->route('advert.admin');
     // }
 
-    // public function index(Request $request)
-    // {
-    //     $paid = $request->get('paid');
-    //     $active = $request->get('active');
+    public function index(Request $request)
+    {
+        $paid = $request->get('paid');
+        $active = $request->get('active');
 
-    //     $adverts = Advert::query()->getOwnList($paid, $active);
+        $adverts = Advert::query()->getOwnList($paid, $active);
 
-    //     return view('adverts.index', compact('adverts'));
-    // }
+        return view('adverts.index', compact('adverts'));
+    }
 
     // public function admin()
     // {

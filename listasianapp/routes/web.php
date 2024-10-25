@@ -18,26 +18,26 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// //Advert Route
-// Route::middleware('guest')->group(function () {
-//     Route::get('/advert/display/{id}', [AdvertController::class, 'display'])->name('advert.display');
-// });
-// Route::middleware('auth:sanctum')->group(function () {
-//     Route::get('/advert', [AdvertController::class, 'index'])->name('advert.index');
+//Advert Route
+Route::middleware('guest')->group(function () {
+    Route::get('/advert/display/{id}', [AdvertController::class, 'display'])->name('advert.display');
+});
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/advert', [AdvertController::class, 'index'])->name('advert.index');
 //     Route::get('/advert/create', [AdvertController::class, 'create'])->name('advert.create');
 //     Route::post('/advert/store', [AdvertController::class, 'create'])->name('advert.store');
-//     Route::get('/advert/{id}', [AdvertController::class, 'view'])->name('advert.view');
-//     Route::post('/advert/{id}', [AdvertController::class, 'view'])->name('advert.purchase');
+    Route::get('/advert/{id}', [AdvertController::class, 'view'])->name('advert.view');
+    Route::post('/advert/{id}', [AdvertController::class, 'view'])->name('advert.purchase');
 //     Route::get('/advert/{id}/edit', [AdvertController::class, 'edit'])->name('advert.edit');
 //     Route::put('/advert/{id}', [AdvertController::class, 'update'])->name('advert.update');
 //     Route::delete('/advert/{id}', [AdvertController::class, 'delete'])->name('advert.delete');
 //     Route::get('/advert/admin', [AdvertController::class, 'admin'])->name('advert.admin');
 //     Route::get('/advert/thanks', [AdvertController::class, 'thanks'])->name('advert.thanks');
 //     Route::post('/advert/pay-tracking', [AdvertController::class, 'payTracking'])->name('advert.payTracking');
-// });
+});
 
-// //Category Route
-// Route::post('/category/list', [CategoryController::class, 'list'])->middleware('ajaxOnly')->name('category.list');
+//Category Route
+Route::post('/category/list', [CategoryController::class, 'list'])->middleware('ajaxOnly')->name('category.list');
 // Route::middleware(['auth', 'can:isAdmin'])->group(function () {
 //     Route::get('/category/create-form', [CategoryController::class, 'createForm'])->name('category.createForm');
 //     Route::post('/category/create', [CategoryController::class, 'create'])->name('category.create');
@@ -46,9 +46,9 @@ Route::get('/', function () {
 //     Route::delete('/category/delete/{id}', [CategoryController::class, 'destroy'])->name('category.destroy');
 //     Route::get('/category/admin', [CategoryController::class, 'admin'])->name('category.admin');
 // });
-// Route::get('/category/{id}', [CategoryController::class, 'show'])->name('category.show');
-// Route::get('/category', [CategoryController::class, 'index'])->name('category.index');
-// Route::get('/category/{code}/paid-adverts', [CategoryController::class, 'paidAdverts'])->name('category.paidAdverts');
+Route::get('/category/{id}', [CategoryController::class, 'show'])->name('category.show');
+Route::get('/category', [CategoryController::class, 'index'])->name('category.index');
+Route::get('/category/{code}/paid-adverts', [CategoryController::class, 'paidAdverts'])->name('category.paidAdverts');
 
 //Geo Route
 Route::middleware(CheckAccessToken::class, ContentSecurityPolicy::class)->group(function () {
@@ -117,7 +117,7 @@ Route::middleware(CheckAccessToken::class, ContentSecurityPolicy::class)->group(
 // Route::get('/contact', [SiteController::class, 'showContactForm'])->name('contact.form');
 // Route::post('/contact', [SiteController::class, 'contact'])->name('contact');
 // Route::get('/error', [SiteController::class, 'error'])->name('error');
-// Route::get('/', [SiteController::class, 'index'])->name('home');
+Route::get('/', [SiteController::class, 'index'])->name('home');
 
 // //User Route
 // Route::middleware('auth:sanctum')->group(function () {

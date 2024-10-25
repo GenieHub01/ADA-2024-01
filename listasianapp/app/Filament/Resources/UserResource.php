@@ -64,8 +64,7 @@ class UserResource extends Resource
                 DatePicker::make('expiry')
                     ->label('Expiry Date')
                     ->format('Y-m-d')
-                    ->weekStartsOn(1)
-                    ->autoclose()
+                    ->locale('id')
                     ->required(),
 
                 Textarea::make('notes')

@@ -1,1 +1,0 @@
-User {{ $user->email }} paid for advert <a href="{{ route('advert.update', ['id' => $advert->id]) }}">Link</a>
