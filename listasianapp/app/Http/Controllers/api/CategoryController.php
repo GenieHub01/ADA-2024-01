@@ -11,28 +11,28 @@ use Illuminate\Support\Facades\Mail;
 
 class CategoryController extends Controller
 {
-//     public function show($id)
-//     {
-//         $category = $this->loadModel($id);
-//         return view('category.show', compact('category'));
-//     }
+    public function show($id)
+    {
+        $category = $this->loadModel($id);
+        return view('category.show', compact('category'));
+    }
 
-//     public function list(Request $request)
-//     {
-//         if ($request->isMethod('post')) {
-//             $categoryId = $request->input('Advert.category_id');
-//             $categories = Category::where('parent_id', $categoryId)->get();
+    public function list(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            $categoryId = $request->input('Advert.category_id');
+            $categories = Category::where('parent_id', $categoryId)->get();
 
-//             $options = '';
-//             foreach ($categories as $category) {
-//                 $options .= '<option value="' . $category->id . '">' . e($category->name) . '</option>';
-//             }
+            $options = '';
+            foreach ($categories as $category) {
+                $options .= '<option value="' . $category->id . '">' . e($category->name) . '</option>';
+            }
 
-//             return response()->json(['data' => $options], 200);
-//         }
+            return response()->json(['data' => $options], 200);
+        }
 
-//         return view('category.list')->with('message', 'Invalid request method.');
-//     }
+        return view('category.list')->with('message', 'Invalid request method.');
+    }
 
 //     public function createForm()
 //     {
@@ -103,49 +103,49 @@ class CategoryController extends Controller
 //         return redirect()->route('category.index')->with('message', 'Category deleted successfully!');
 //     }
 
-//     public function index(Request $request, $code = null)
-//     {
-//         $category = Category::where('code', $code)->first();
-//         $q = $request->input('q', null);
-//         $t = $request->input('t', 0);
+    public function index(Request $request, $code = null)
+    {
+        $category = Category::where('code', $code)->first();
+        $q = $request->input('q', null);
+        $t = $request->input('t', 0);
 
-//         if ($request->has('name')) {
-//             $body = 'Name: ' . $request->input('name') . '<br>';
-//             $body .= 'Email: ' . $request->input('email') . '<br>';
-//             $body .= 'Phone: ' . $request->input('phone') . '<br>';
-//             $body .= 'Website: ' . $request->input('website') . '<br>';
-//             $body .= 'Message: ' . nl2br($request->input('message'));
+        if ($request->has('name')) {
+            $body = 'Name: ' . $request->input('name') . '<br>';
+            $body .= 'Email: ' . $request->input('email') . '<br>';
+            $body .= 'Phone: ' . $request->input('phone') . '<br>';
+            $body .= 'Website: ' . $request->input('website') . '<br>';
+            $body .= 'Message: ' . nl2br($request->input('message'));
 
-//             Mail::raw($body, function ($message) {
-//                 $message->to('info@example.com')
-//                         ->subject('Contact Form');
-//             });
-//         }
+            Mail::raw($body, function ($message) {
+                $message->to('info@example.com')
+                        ->subject('Contact Form');
+            });
+        }
 
-//         $geoForm = $request->session()->get('geoForm', new GeoFormRequest());
+        $geoForm = $request->session()->get('geoForm', new GeoFormRequest());
 
-//         if ($request->isMethod('post') && $request->has('GeoForm')) {
-//             $geoForm->fill($request->input('GeoForm'));
-//             $request->session()->put('geoForm', $geoForm);
-//         }
+        if ($request->isMethod('post') && $request->has('GeoForm')) {
+            $geoForm->fill($request->input('GeoForm'));
+            $request->session()->put('geoForm', $geoForm);
+        }
 
-//         $categoryInstance = new Category();
-//         $treeViewData = $categoryInstance->getTreeviewData();
+        $categoryInstance = new Category();
+        $treeViewData = $categoryInstance->getTreeviewData();
 
-//         $dataProvider = $t == 1 
-//             ? Category::where('name', 'like', "%{$q}%")->get() 
-//             : Advert::where('category_id', $category->id)->get();
+        $dataProvider = $t == 1 
+            ? Category::where('name', 'like', "%{$q}%")->get() 
+            : Advert::where('category_id', $category->id)->get();
 
-//         return view('category.index', compact('treeViewData', 'dataProvider', 'geoForm', 'category'));
-//     }
+        return view('category.index', compact('treeViewData', 'dataProvider', 'geoForm', 'category'));
+    }
 
-//     public function paidAdverts($type, $url)
-//     {
-//         $category = Category::where('url', $url)->first();
-//         $dataProvider = Advert::where('category_id', $category->id)->where('paid', true)->get();
+    public function paidAdverts($type, $url)
+    {
+        $category = Category::where('url', $url)->first();
+        $dataProvider = Advert::where('category_id', $category->id)->where('paid', true)->get();
 
-//         return view('category.paid_adverts', compact('category', 'dataProvider'));
-//     }
+        return view('category.paid_adverts', compact('category', 'dataProvider'));
+    }
 
 //     public function admin()
 //     {
@@ -153,10 +153,8 @@ class CategoryController extends Controller
 //         return view('category.admin', compact('categories'));
 //     }
 
-//     protected function loadModel($id)
-//     {
-//         return Category::findOrFail($id);
-//     }
-// }
-
+    protected function loadModel($id)
+    {
+        return Category::findOrFail($id);
+    }
 }

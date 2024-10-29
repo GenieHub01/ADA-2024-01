@@ -1,8 +1,7 @@
-{{-- @var $this Controller --}}
-@extends('layouts.app')
+{{-- @extends('layouts.app')
 
 @section('content')
     <div id="content">
         {!! $content !!}
     </div>
-@endsection
+@endsection --}}
