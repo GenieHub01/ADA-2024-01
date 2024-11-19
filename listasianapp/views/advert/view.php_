@@ -1,0 +1,211 @@
+<?php
+/* @var $this AdvertController */
+/* @var $model Advert */
+
+$this->breadcrumbs=array(
+    //'Adverts'=>array('index'),
+    $model->name,
+);
+
+$this->seo_keywords = $model->getSeoKeywords();
+$this->seo_description = $model->getSeoDescription();
+?>
+
+    </div>
+</div>
+
+<?php if ($model->paid): ?>
+
+<div class="advert-title">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="about-nav">
+                    <?= ($prev = $model->prev) ? $prev->getSeoLink('< Prev') : '' ?>
+                    <?= ($next = $model->next) ? $next->getSeoLink('Next >') : '' ?>
+                </div>
+                <h1><?= CHtml::encode($model->name) ?></h1>
+                <a class="back-to-directory" href="/"><i class="fa fa-chevron-left"></i> Back to Directory</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+        <div class="row">
+<div class="col-md-12">
+    <?php if (Yii::app()->user->hasFlash('success')): ?>
+        <h4>
+            <?= Yii::app()->user->getFlash('success');?>
+        </h4>
+    <?php endif; ?>
+    <h2 class="subcategory">
+        <?= Chtml::link('<i class="fa fa-chevron-left"></i>' . $model->getSeoCategory(), ['category/index', 'code' => $model->categorys[0]->getUrl()]); ?>
+    </h2>
+</div>
+<div class="col-md-6 about-content">
+
+    <article class="about-description">
+        <?= nl2br(CHtml::encode($model->description)); ?>
+    </article>
+
+    
+
+
+</div>
+
+<div class="col-md-6 about-content">
+    
+
+
+    
+
+    <div class="about-img"><?= CHtml::image($model->image, $model->name, ['title' => $model->name]); ?></div>
+
+    <div class="about-address-row">
+        <!-- <div class="about-address"><?= CHtml::encode($model->address) ?></div> -->
+        
+    </div>
+    
+
+
+    <div class="about-contacts">
+        <p><span class="about-site"><?= CHtml::link($model->web, $model->web, ['rel' => 'nofollow', 'target' => '_blank']) ?></span></p>
+        <p><span class="about-phone"><?= CHtml::link($model->telephone, 'tel:'.$model->telephone, ['rel' => 'nofollow']) ?></span></p>
+        <p><span class="about-email"><?= CHtml::mailto($model->email, $model->email, ['rel' => 'nofollow']) ?></span></p>
+    </div>
+
+    <div class="about-socials">
+        <a rel="nofollow" target="_blank" class="about-fb" <?= !empty($model->facebook_url) ? 'href=' . $model->facebook_url : '' ?>></a>
+        <a rel="nofollow" target="_blank" class="about-tw" <?= !empty($model->twitter_url) ? 'href=' . $model->twitter_url : '' ?>></a>
+        <a rel="nofollow" target="_blank" class="about-pi" <?= !empty($model->pinterest_url) ? 'href=' . $model->pinterest_url : '' ?>></a>
+        <a rel="nofollow" target="_blank" class="about-li" <?= !empty($model->instagram_url) ? 'href=' . $model->instagram_url : '' ?>></a>
+        <a rel="nofollow" target="_blank" class="about-gp" <?= !empty($model->gplus_url) ? 'href=' . $model->gplus_url : '' ?>></a>
+        <a rel="nofollow" target="_blank" class="about-yt" <?= !empty($model->youtube_url) ? 'href=' . $model->youtube_url : '' ?>></a>
+    </div>
+</div>
+
+
+<div class="col-md-12">
+    <div class="about-map-address"><?= CHtml::encode($model->address) ?>, <?= CHtml::encode($model->postcode) ?></div>
+    <div id="map"></div>
+</div>
+
+<script>
+        function initMap() {
+            var myLatLng = {lat: <?= $model->lat; ?>, lng: <?= $model->lng; ?>};
+
+            // Create a map object and specify the DOM element for display.
+            var map = new google.maps.Map(document.getElementById('map'), {
+              center: myLatLng,
+              scrollwheel: false,
+              zoom: 15
+            });
+
+            // Create a marker and set its position.
+            var marker = new google.maps.Marker({
+              map: map,
+              position: myLatLng,
+              icon: {   url: 'https://list.asiandirectoryapp.com/images/marker.svg',
+                        // This marker is 20 pixels wide by 32 pixels high.
+                        size: new google.maps.Size(32, 41),
+                        // The origin for this image is (0, 0).
+                        origin: new google.maps.Point(0, 0),
+                        // The anchor for this image is the base of the flagpole at (0, 32).
+                        anchor: new google.maps.Point(16, 40) },
+              title: '<?= CHtml::encode($model->name) ?>'
+            });
+
+            // Try HTML5 geolocation.
+            if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition(function(position) {
+                var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
+                distance = (google.maps.geometry.spherical.computeDistanceBetween(pos, marker.position)),
+                distanceInMiles = function() { return parseFloat(distance * 0.000621371).toFixed(1).toString() },
+                el = document.createElement('span'); 
+                el.className = 'distance';                                          // Create a <span> node
+                var span = document.createTextNode(distanceInMiles() + " miles");   // Create a text node
+                el.appendChild(span);                                               // Append the text to <span>
+                document.querySelector('.about-map-address').appendChild(el);
+              }, function() {
+                handleLocationError(true, infoWindow, map.getCenter());
+              });             
+              
+            } else {
+              // Browser doesn't support Geolocation
+              handleLocationError(false, infoWindow, map.getCenter());
+            }
+
+            function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+                infoWindow.setPosition(pos);
+                infoWindow.setContent(browserHasGeolocation ?
+                                      'Error: The Geolocation service failed.' :
+                                      'Error: Your browser doesn\'t support geolocation.');
+            }
+        }
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwXErUm3MUxoSTZOvWR7v4l_dFD2XRBGA&libraries=geometry&callback=initMap"
+                async defer></script>
+
+<?php else: ?>
+
+<?php $this->widget('application.widgets.stripe.StripeWidget', [
+    'advert' => $model,
+]); ?>
+
+<?php endif; ?>
+
+<!-- Facebook Pixel Code -->
+<script>
+    fbq('track', 'ViewContent', {
+        content_name: "<?= $model->name; ?>",
+        content_category: '<?= $model->getSeoCategory(); ?>',
+        content_ids: ['<?= $model->id; ?>'],
+        content_type: 'ADA-Advert',
+        value: 0.00,
+        currency: 'GBP',
+    });
+
+    function tracker(id) {
+        var o = {
+            site: 'Website',
+            phone: 'Phone',
+            email: 'Email',
+            fb: 'Facebook',
+            tw: 'Twitter',
+            pi: 'Pinterest',
+            li: 'Linkedin',
+            gp: 'Google+',
+            yt: 'Youtube'
+        };
+
+        fbq('trackCustom', 'Click-' + o[id], {
+            content_name: "<?= $model->name; ?>",
+            content_category: '<?= $model->getSeoCategory(); ?>',
+            content_ids: ['<?= $model->id; ?>'],
+            content_type: 'ADA-Advert',
+            value: 0.00,
+            currency: 'GBP',
+        });
+
+        ga('send', {
+            hitType: 'event',
+            eventCategory: '<?= $model->getSeoCategory(); ?>',
+            eventAction: "<?= $model->name; ?>",
+            eventLabel: 'Click-' + o[id]
+        });
+    }
+
+</script>
+<!-- End Facebook Pixel Code -->
+
+<?php
+
+$js = <<<EOD
+$('.about-contacts span, .about-socials a').click(function() {
+    tracker($(this).attr('class').split('-')[1]);
+});
+EOD;
+
+Yii::app()->clientScript->registerScript('pixel', $js);

@@ -1,0 +1,1076 @@
+ERROR -- 103.149.240.90 -- 2021-03-20T08:56:17+00:00 -- Exception:Could not authorize user. Bad request -- Hybrid_Exception Object
+(
+    [message:protected] => Could not authorize user. Bad request
+    [string:Exception:private] => 
+    [code:protected] => 0
+    [file:protected] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/hybridauth/hybridauth/hybridauth/Hybrid/Providers/Facebook.php
+    [line:protected] => 103
+    [trace:Exception:private] => Array
+        (
+            [0] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/hybridauth/hybridauth/hybridauth/Hybrid/Endpoint.php
+                    [line] => 173
+                    [function] => loginFinish
+                    [class] => Hybrid_Providers_Facebook
+                    [type] => ->
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+            [1] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/hybridauth/hybridauth/hybridauth/Hybrid/Endpoint.php
+                    [line] => 55
+                    [function] => processAuthDone
+                    [class] => Hybrid_Endpoint
+                    [type] => ->
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+            [2] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/hybridauth/hybridauth/hybridauth/Hybrid/Endpoint.php
+                    [line] => 72
+                    [function] => __construct
+                    [class] => Hybrid_Endpoint
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [hauth_done] => Facebook
+                                    [error_code] => 1349205
+                                    [error_message] => Feature unavailable: Facebook Login is currently unavailable for this app.
+                                )
+
+                        )
+
+                )
+
+            [3] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/controllers/SiteController.php
+                    [line] => 87
+                    [function] => process
+                    [class] => Hybrid_Endpoint
+                    [type] => ::
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+            [4] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/actions/CInlineAction.php
+                    [line] => 49
+                    [function] => actionLogin
+                    [class] => SiteController
+                    [type] => ->
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+            [5] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/CController.php
+                    [line] => 308
+                    [function] => runWithParams
+                    [class] => CInlineAction
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [hauth_done] => Facebook
+                                    [error_code] => 1349205
+                                    [error_message] => Feature unavailable: Facebook Login is currently unavailable for this app.
+                                )
+
+                        )
+
+                )
+
+            [6] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/CController.php
+                    [line] => 286
+                    [function] => runAction
+                    [class] => CController
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => CInlineAction Object
+                                (
+                                    [_id:CAction:private] => login
+                                    [_controller:CAction:private] => SiteController Object
+                                        (
+                                            [layout] => main
+                                            [menu] => Array
+                                                (
+                                                )
+
+                                            [breadcrumbs] => Array
+                                                (
+                                                )
+
+                                            [seo_keywords] => 
+                                            [seo_description] => Asian Directory advertising that actually works, and Asian Directory in your pocket everywhere you go, transform your business with the UK's very first Asian Directory. Download and browse all our adverts.
+                                            [canonical] => https://list.asiandirectoryapp.com/login?hauth_done=Facebook&error_code=1349205&error_message=Feature+unavailable%3A+Facebook+Login+is+currently+unavailable+for+this+app.
+                                            [defaultAction] => index
+                                            [_id:CController:private] => site
+                                            [_action:CController:private] => CInlineAction Object
+ *RECURSION*
+                                            [_pageTitle:CController:private] => 
+                                            [_cachingStack:CController:private] => 
+                                            [_clips:CController:private] => 
+                                            [_dynamicOutput:CController:private] => 
+                                            [_pageStates:CController:private] => 
+                                            [_module:CController:private] => 
+                                            [_widgetStack:CBaseController:private] => Array
+                                                (
+                                                )
+
+                                            [_e:CComponent:private] => 
+                                            [_m:CComponent:private] => 
+                                        )
+
+                                    [_e:CComponent:private] => 
+                                    [_m:CComponent:private] => 
+                                )
+
+                        )
+
+                )
+
+            [7] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/CController.php
+                    [line] => 265
+                    [function] => runActionWithFilters
+                    [class] => CController
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => CInlineAction Object
+                                (
+                                    [_id:CAction:private] => login
+                                    [_controller:CAction:private] => SiteController Object
+                                        (
+                                            [layout] => main
+                                            [menu] => Array
+                                                (
+                                                )
+
+                                            [breadcrumbs] => Array
+                                                (
+                                                )
+
+                                            [seo_keywords] => 
+                                            [seo_description] => Asian Directory advertising that actually works, and Asian Directory in your pocket everywhere you go, transform your business with the UK's very first Asian Directory. Download and browse all our adverts.
+                                            [canonical] => https://list.asiandirectoryapp.com/login?hauth_done=Facebook&error_code=1349205&error_message=Feature+unavailable%3A+Facebook+Login+is+currently+unavailable+for+this+app.
+                                            [defaultAction] => index
+                                            [_id:CController:private] => site
+                                            [_action:CController:private] => CInlineAction Object
+ *RECURSION*
+                                            [_pageTitle:CController:private] => 
+                                            [_cachingStack:CController:private] => 
+                                            [_clips:CController:private] => 
+                                            [_dynamicOutput:CController:private] => 
+                                            [_pageStates:CController:private] => 
+                                            [_module:CController:private] => 
+                                            [_widgetStack:CBaseController:private] => Array
+                                                (
+                                                )
+
+                                            [_e:CComponent:private] => 
+                                            [_m:CComponent:private] => 
+                                        )
+
+                                    [_e:CComponent:private] => 
+                                    [_m:CComponent:private] => 
+                                )
+
+                            [1] => Array
+                                (
+                                )
+
+                        )
+
+                )
+
+            [8] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/CWebApplication.php
+                    [line] => 282
+                    [function] => run
+                    [class] => CController
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => login
+                        )
+
+                )
+
+            [9] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/CWebApplication.php
+                    [line] => 141
+                    [function] => runController
+                    [class] => CWebApplication
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => site/login
+                        )
+
+                )
+
+            [10] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/base/CApplication.php
+                    [line] => 185
+                    [function] => processRequest
+                    [class] => CWebApplication
+                    [type] => ->
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+            [11] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/web/index.php
+                    [line] => 15
+                    [function] => run
+                    [class] => CApplication
+                    [type] => ->
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [previous:Exception:private] => 
+)
+
+ERROR -- 103.149.240.90 -- 2021-03-20T08:56:17+00:00 -- Hybrid_Auth initialize: A stored Error found, Throw an new Exception and delete it from the store: Error#0, 'Could not authorize user. Bad request' -- 
+ERROR -- 116.102.33.154 -- 2021-03-26T14:06:29+00:00 -- Exception:Could not authorize user. Bad request -- Hybrid_Exception Object
+(
+    [message:protected] => Could not authorize user. Bad request
+    [string:Exception:private] => 
+    [code:protected] => 0
+    [file:protected] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/hybridauth/hybridauth/hybridauth/Hybrid/Providers/Facebook.php
+    [line:protected] => 103
+    [trace:Exception:private] => Array
+        (
+            [0] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/hybridauth/hybridauth/hybridauth/Hybrid/Endpoint.php
+                    [line] => 173
+                    [function] => loginFinish
+                    [class] => Hybrid_Providers_Facebook
+                    [type] => ->
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+            [1] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/hybridauth/hybridauth/hybridauth/Hybrid/Endpoint.php
+                    [line] => 55
+                    [function] => processAuthDone
+                    [class] => Hybrid_Endpoint
+                    [type] => ->
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+            [2] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/hybridauth/hybridauth/hybridauth/Hybrid/Endpoint.php
+                    [line] => 72
+                    [function] => __construct
+                    [class] => Hybrid_Endpoint
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [hauth_done] => Facebook
+                                    [error_code] => 1349205
+                                    [error_message] => Không dùng được tính năng: Tính năng Đăng nhập bằng Facebook hiện chưa áp dụng cho ứng dụng này.
+                                )
+
+                        )
+
+                )
+
+            [3] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/controllers/SiteController.php
+                    [line] => 87
+                    [function] => process
+                    [class] => Hybrid_Endpoint
+                    [type] => ::
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+            [4] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/actions/CInlineAction.php
+                    [line] => 49
+                    [function] => actionLogin
+                    [class] => SiteController
+                    [type] => ->
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+            [5] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/CController.php
+                    [line] => 308
+                    [function] => runWithParams
+                    [class] => CInlineAction
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [hauth_done] => Facebook
+                                    [error_code] => 1349205
+                                    [error_message] => Không dùng được tính năng: Tính năng Đăng nhập bằng Facebook hiện chưa áp dụng cho ứng dụng này.
+                                )
+
+                        )
+
+                )
+
+            [6] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/CController.php
+                    [line] => 286
+                    [function] => runAction
+                    [class] => CController
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => CInlineAction Object
+                                (
+                                    [_id:CAction:private] => login
+                                    [_controller:CAction:private] => SiteController Object
+                                        (
+                                            [layout] => main
+                                            [menu] => Array
+                                                (
+                                                )
+
+                                            [breadcrumbs] => Array
+                                                (
+                                                )
+
+                                            [seo_keywords] => 
+                                            [seo_description] => Asian Directory advertising that actually works, and Asian Directory in your pocket everywhere you go, transform your business with the UK's very first Asian Directory. Download and browse all our adverts.
+                                            [canonical] => https://list.asiandirectoryapp.com/login?hauth_done=Facebook&error_code=1349205&error_message=Kh%C3%B4ng+d%C3%B9ng+%C4%91%C6%B0%E1%BB%A3c+t%C3%ADnh+n%C4%83ng%3A+T%C3%ADnh+n%C4%83ng+%C4%90%C4%83ng+nh%E1%BA%ADp+b%E1%BA%B1ng+Facebook+hi%E1%BB%87n+ch%C6%B0a+%C3%A1p+d%E1%BB%A5ng+cho+%E1%BB%A9ng+d%E1%BB%A5ng+n%C3%A0y.
+                                            [defaultAction] => index
+                                            [_id:CController:private] => site
+                                            [_action:CController:private] => CInlineAction Object
+ *RECURSION*
+                                            [_pageTitle:CController:private] => 
+                                            [_cachingStack:CController:private] => 
+                                            [_clips:CController:private] => 
+                                            [_dynamicOutput:CController:private] => 
+                                            [_pageStates:CController:private] => 
+                                            [_module:CController:private] => 
+                                            [_widgetStack:CBaseController:private] => Array
+                                                (
+                                                )
+
+                                            [_e:CComponent:private] => 
+                                            [_m:CComponent:private] => 
+                                        )
+
+                                    [_e:CComponent:private] => 
+                                    [_m:CComponent:private] => 
+                                )
+
+                        )
+
+                )
+
+            [7] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/CController.php
+                    [line] => 265
+                    [function] => runActionWithFilters
+                    [class] => CController
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => CInlineAction Object
+                                (
+                                    [_id:CAction:private] => login
+                                    [_controller:CAction:private] => SiteController Object
+                                        (
+                                            [layout] => main
+                                            [menu] => Array
+                                                (
+                                                )
+
+                                            [breadcrumbs] => Array
+                                                (
+                                                )
+
+                                            [seo_keywords] => 
+                                            [seo_description] => Asian Directory advertising that actually works, and Asian Directory in your pocket everywhere you go, transform your business with the UK's very first Asian Directory. Download and browse all our adverts.
+                                            [canonical] => https://list.asiandirectoryapp.com/login?hauth_done=Facebook&error_code=1349205&error_message=Kh%C3%B4ng+d%C3%B9ng+%C4%91%C6%B0%E1%BB%A3c+t%C3%ADnh+n%C4%83ng%3A+T%C3%ADnh+n%C4%83ng+%C4%90%C4%83ng+nh%E1%BA%ADp+b%E1%BA%B1ng+Facebook+hi%E1%BB%87n+ch%C6%B0a+%C3%A1p+d%E1%BB%A5ng+cho+%E1%BB%A9ng+d%E1%BB%A5ng+n%C3%A0y.
+                                            [defaultAction] => index
+                                            [_id:CController:private] => site
+                                            [_action:CController:private] => CInlineAction Object
+ *RECURSION*
+                                            [_pageTitle:CController:private] => 
+                                            [_cachingStack:CController:private] => 
+                                            [_clips:CController:private] => 
+                                            [_dynamicOutput:CController:private] => 
+                                            [_pageStates:CController:private] => 
+                                            [_module:CController:private] => 
+                                            [_widgetStack:CBaseController:private] => Array
+                                                (
+                                                )
+
+                                            [_e:CComponent:private] => 
+                                            [_m:CComponent:private] => 
+                                        )
+
+                                    [_e:CComponent:private] => 
+                                    [_m:CComponent:private] => 
+                                )
+
+                            [1] => Array
+                                (
+                                )
+
+                        )
+
+                )
+
+            [8] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/CWebApplication.php
+                    [line] => 282
+                    [function] => run
+                    [class] => CController
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => login
+                        )
+
+                )
+
+            [9] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/CWebApplication.php
+                    [line] => 141
+                    [function] => runController
+                    [class] => CWebApplication
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => site/login
+                        )
+
+                )
+
+            [10] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/base/CApplication.php
+                    [line] => 185
+                    [function] => processRequest
+                    [class] => CWebApplication
+                    [type] => ->
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+            [11] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/web/index.php
+                    [line] => 15
+                    [function] => run
+                    [class] => CApplication
+                    [type] => ->
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [previous:Exception:private] => 
+)
+
+ERROR -- 116.102.33.154 -- 2021-03-26T14:06:29+00:00 -- Hybrid_Auth initialize: A stored Error found, Throw an new Exception and delete it from the store: Error#0, 'Could not authorize user. Bad request' -- 
+ERROR -- 176.98.8.7 -- 2022-06-18T18:45:44+00:00 -- Exception:Could not authorize user. Bad request -- Hybrid_Exception Object
+(
+    [message:protected] => Could not authorize user. Bad request
+    [string:Exception:private] => 
+    [code:protected] => 0
+    [file:protected] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/hybridauth/hybridauth/hybridauth/Hybrid/Providers/Facebook.php
+    [line:protected] => 103
+    [trace:Exception:private] => Array
+        (
+            [0] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/hybridauth/hybridauth/hybridauth/Hybrid/Endpoint.php
+                    [line] => 173
+                    [function] => loginFinish
+                    [class] => Hybrid_Providers_Facebook
+                    [type] => ->
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+            [1] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/hybridauth/hybridauth/hybridauth/Hybrid/Endpoint.php
+                    [line] => 55
+                    [function] => processAuthDone
+                    [class] => Hybrid_Endpoint
+                    [type] => ->
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+            [2] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/hybridauth/hybridauth/hybridauth/Hybrid/Endpoint.php
+                    [line] => 72
+                    [function] => __construct
+                    [class] => Hybrid_Endpoint
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [hauth_done] => Facebook
+                                    [error_code] => 1349126
+                                    [error_message] => App not set up: This app is still in development mode, and you don't have access to it. Switch to a registered test user or ask an app admin for permissions.
+                                )
+
+                        )
+
+                )
+
+            [3] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/controllers/SiteController.php
+                    [line] => 87
+                    [function] => process
+                    [class] => Hybrid_Endpoint
+                    [type] => ::
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+            [4] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/actions/CInlineAction.php
+                    [line] => 49
+                    [function] => actionLogin
+                    [class] => SiteController
+                    [type] => ->
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+            [5] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/CController.php
+                    [line] => 308
+                    [function] => runWithParams
+                    [class] => CInlineAction
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [hauth_done] => Facebook
+                                    [error_code] => 1349126
+                                    [error_message] => App not set up: This app is still in development mode, and you don't have access to it. Switch to a registered test user or ask an app admin for permissions.
+                                )
+
+                        )
+
+                )
+
+            [6] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/CController.php
+                    [line] => 286
+                    [function] => runAction
+                    [class] => CController
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => CInlineAction Object
+                                (
+                                    [_id:CAction:private] => login
+                                    [_controller:CAction:private] => SiteController Object
+                                        (
+                                            [layout] => main
+                                            [menu] => Array
+                                                (
+                                                )
+
+                                            [breadcrumbs] => Array
+                                                (
+                                                )
+
+                                            [seo_keywords] => 
+                                            [seo_description] => Asian Directory advertising that actually works, and Asian Directory in your pocket everywhere you go, transform your business with the UK's very first Asian Directory. Download and browse all our adverts.
+                                            [canonical] => https://list.asiandirectoryapp.com/login?hauth_done=Facebook&error_code=1349126&error_message=App+not+set+up%3A+This+app+is+still+in+development+mode%2C+and+you+don%27t+have+access+to+it.+Switch+to+a+registered+test+user+or+ask+an+app+admin+for+permissions.
+                                            [defaultAction] => index
+                                            [_id:CController:private] => site
+                                            [_action:CController:private] => CInlineAction Object
+ *RECURSION*
+                                            [_pageTitle:CController:private] => 
+                                            [_cachingStack:CController:private] => 
+                                            [_clips:CController:private] => 
+                                            [_dynamicOutput:CController:private] => 
+                                            [_pageStates:CController:private] => 
+                                            [_module:CController:private] => 
+                                            [_widgetStack:CBaseController:private] => Array
+                                                (
+                                                )
+
+                                            [_e:CComponent:private] => 
+                                            [_m:CComponent:private] => 
+                                        )
+
+                                    [_e:CComponent:private] => 
+                                    [_m:CComponent:private] => 
+                                )
+
+                        )
+
+                )
+
+            [7] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/CController.php
+                    [line] => 265
+                    [function] => runActionWithFilters
+                    [class] => CController
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => CInlineAction Object
+                                (
+                                    [_id:CAction:private] => login
+                                    [_controller:CAction:private] => SiteController Object
+                                        (
+                                            [layout] => main
+                                            [menu] => Array
+                                                (
+                                                )
+
+                                            [breadcrumbs] => Array
+                                                (
+                                                )
+
+                                            [seo_keywords] => 
+                                            [seo_description] => Asian Directory advertising that actually works, and Asian Directory in your pocket everywhere you go, transform your business with the UK's very first Asian Directory. Download and browse all our adverts.
+                                            [canonical] => https://list.asiandirectoryapp.com/login?hauth_done=Facebook&error_code=1349126&error_message=App+not+set+up%3A+This+app+is+still+in+development+mode%2C+and+you+don%27t+have+access+to+it.+Switch+to+a+registered+test+user+or+ask+an+app+admin+for+permissions.
+                                            [defaultAction] => index
+                                            [_id:CController:private] => site
+                                            [_action:CController:private] => CInlineAction Object
+ *RECURSION*
+                                            [_pageTitle:CController:private] => 
+                                            [_cachingStack:CController:private] => 
+                                            [_clips:CController:private] => 
+                                            [_dynamicOutput:CController:private] => 
+                                            [_pageStates:CController:private] => 
+                                            [_module:CController:private] => 
+                                            [_widgetStack:CBaseController:private] => Array
+                                                (
+                                                )
+
+                                            [_e:CComponent:private] => 
+                                            [_m:CComponent:private] => 
+                                        )
+
+                                    [_e:CComponent:private] => 
+                                    [_m:CComponent:private] => 
+                                )
+
+                            [1] => Array
+                                (
+                                )
+
+                        )
+
+                )
+
+            [8] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/CWebApplication.php
+                    [line] => 282
+                    [function] => run
+                    [class] => CController
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => login
+                        )
+
+                )
+
+            [9] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/CWebApplication.php
+                    [line] => 141
+                    [function] => runController
+                    [class] => CWebApplication
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => site/login
+                        )
+
+                )
+
+            [10] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/base/CApplication.php
+                    [line] => 185
+                    [function] => processRequest
+                    [class] => CWebApplication
+                    [type] => ->
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+            [11] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/web/index.php
+                    [line] => 15
+                    [function] => run
+                    [class] => CApplication
+                    [type] => ->
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [previous:Exception:private] => 
+)
+
+ERROR -- 176.98.8.7 -- 2022-06-18T18:45:44+00:00 -- Hybrid_Auth initialize: A stored Error found, Throw an new Exception and delete it from the store: Error#0, 'Could not authorize user. Bad request' -- 
+ERROR -- 182.179.142.83 -- 2023-06-11T09:52:25+00:00 -- Exception:Could not authorize user. Bad request -- Hybrid_Exception Object
+(
+    [message:protected] => Could not authorize user. Bad request
+    [string:Exception:private] => 
+    [code:protected] => 0
+    [file:protected] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/hybridauth/hybridauth/hybridauth/Hybrid/Providers/Facebook.php
+    [line:protected] => 103
+    [trace:Exception:private] => Array
+        (
+            [0] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/hybridauth/hybridauth/hybridauth/Hybrid/Endpoint.php
+                    [line] => 173
+                    [function] => loginFinish
+                    [class] => Hybrid_Providers_Facebook
+                    [type] => ->
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+            [1] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/hybridauth/hybridauth/hybridauth/Hybrid/Endpoint.php
+                    [line] => 55
+                    [function] => processAuthDone
+                    [class] => Hybrid_Endpoint
+                    [type] => ->
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+            [2] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/hybridauth/hybridauth/hybridauth/Hybrid/Endpoint.php
+                    [line] => 72
+                    [function] => __construct
+                    [class] => Hybrid_Endpoint
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [hauth_done] => Facebook
+                                    [error_code] => 1349126
+                                    [error_message] => App not active: This app is not accessible right now and the app developer is aware of the issue. You will be able to log in when the app is reactivated.
+                                )
+
+                        )
+
+                )
+
+            [3] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/controllers/SiteController.php
+                    [line] => 87
+                    [function] => process
+                    [class] => Hybrid_Endpoint
+                    [type] => ::
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+            [4] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/actions/CInlineAction.php
+                    [line] => 49
+                    [function] => actionLogin
+                    [class] => SiteController
+                    [type] => ->
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+            [5] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/CController.php
+                    [line] => 308
+                    [function] => runWithParams
+                    [class] => CInlineAction
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [hauth_done] => Facebook
+                                    [error_code] => 1349126
+                                    [error_message] => App not active: This app is not accessible right now and the app developer is aware of the issue. You will be able to log in when the app is reactivated.
+                                )
+
+                        )
+
+                )
+
+            [6] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/CController.php
+                    [line] => 286
+                    [function] => runAction
+                    [class] => CController
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => CInlineAction Object
+                                (
+                                    [_id:CAction:private] => login
+                                    [_controller:CAction:private] => SiteController Object
+                                        (
+                                            [layout] => main
+                                            [menu] => Array
+                                                (
+                                                )
+
+                                            [breadcrumbs] => Array
+                                                (
+                                                )
+
+                                            [seo_keywords] => 
+                                            [seo_description] => Asian Directory advertising that actually works, and Asian Directory in your pocket everywhere you go, transform your business with the UK's very first Asian Directory. Download and browse all our adverts.
+                                            [canonical] => https://list.asiandirectoryapp.com/login?hauth_done=Facebook&error_code=1349126&error_message=App+not+active%3A+This+app+is+not+accessible+right+now+and+the+app+developer+is+aware+of+the+issue.+You+will+be+able+to+log+in+when+the+app+is+reactivated.
+                                            [defaultAction] => index
+                                            [_id:CController:private] => site
+                                            [_action:CController:private] => CInlineAction Object
+ *RECURSION*
+                                            [_pageTitle:CController:private] => 
+                                            [_cachingStack:CController:private] => 
+                                            [_clips:CController:private] => 
+                                            [_dynamicOutput:CController:private] => 
+                                            [_pageStates:CController:private] => 
+                                            [_module:CController:private] => 
+                                            [_widgetStack:CBaseController:private] => Array
+                                                (
+                                                )
+
+                                            [_e:CComponent:private] => 
+                                            [_m:CComponent:private] => 
+                                        )
+
+                                    [_e:CComponent:private] => 
+                                    [_m:CComponent:private] => 
+                                )
+
+                        )
+
+                )
+
+            [7] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/CController.php
+                    [line] => 265
+                    [function] => runActionWithFilters
+                    [class] => CController
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => CInlineAction Object
+                                (
+                                    [_id:CAction:private] => login
+                                    [_controller:CAction:private] => SiteController Object
+                                        (
+                                            [layout] => main
+                                            [menu] => Array
+                                                (
+                                                )
+
+                                            [breadcrumbs] => Array
+                                                (
+                                                )
+
+                                            [seo_keywords] => 
+                                            [seo_description] => Asian Directory advertising that actually works, and Asian Directory in your pocket everywhere you go, transform your business with the UK's very first Asian Directory. Download and browse all our adverts.
+                                            [canonical] => https://list.asiandirectoryapp.com/login?hauth_done=Facebook&error_code=1349126&error_message=App+not+active%3A+This+app+is+not+accessible+right+now+and+the+app+developer+is+aware+of+the+issue.+You+will+be+able+to+log+in+when+the+app+is+reactivated.
+                                            [defaultAction] => index
+                                            [_id:CController:private] => site
+                                            [_action:CController:private] => CInlineAction Object
+ *RECURSION*
+                                            [_pageTitle:CController:private] => 
+                                            [_cachingStack:CController:private] => 
+                                            [_clips:CController:private] => 
+                                            [_dynamicOutput:CController:private] => 
+                                            [_pageStates:CController:private] => 
+                                            [_module:CController:private] => 
+                                            [_widgetStack:CBaseController:private] => Array
+                                                (
+                                                )
+
+                                            [_e:CComponent:private] => 
+                                            [_m:CComponent:private] => 
+                                        )
+
+                                    [_e:CComponent:private] => 
+                                    [_m:CComponent:private] => 
+                                )
+
+                            [1] => Array
+                                (
+                                )
+
+                        )
+
+                )
+
+            [8] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/CWebApplication.php
+                    [line] => 282
+                    [function] => run
+                    [class] => CController
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => login
+                        )
+
+                )
+
+            [9] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/web/CWebApplication.php
+                    [line] => 141
+                    [function] => runController
+                    [class] => CWebApplication
+                    [type] => ->
+                    [args] => Array
+                        (
+                            [0] => site/login
+                        )
+
+                )
+
+            [10] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/vendor/yiisoft/yii/framework/base/CApplication.php
+                    [line] => 185
+                    [function] => processRequest
+                    [class] => CWebApplication
+                    [type] => ->
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+            [11] => Array
+                (
+                    [file] => /home/adamdz/public_html/list.asiandirectoryapp.com/web/index.php
+                    [line] => 15
+                    [function] => run
+                    [class] => CApplication
+                    [type] => ->
+                    [args] => Array
+                        (
+                        )
+
+                )
+
+        )
+
+    [previous:Exception:private] => 
+)
+
+ERROR -- 182.179.142.83 -- 2023-06-11T09:52:25+00:00 -- Hybrid_Auth initialize: A stored Error found, Throw an new Exception and delete it from the store: Error#0, 'Could not authorize user. Bad request' -- 

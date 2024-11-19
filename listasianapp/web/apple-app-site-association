@@ -1,0 +1,15 @@
+{
+	"applinks": {
+		"apps": [],
+		"details": [
+			{
+				"appID": "5SSTP8YNW6.buhaescuvlad.AsianDirectory",
+				"paths": [ “*”]
+			},
+			{
+				"appID": “XR554FZP95.buhaescuvlad.AsianDirectory",
+				"paths": [ “*”]
+			}
+		]
+	}
+}
