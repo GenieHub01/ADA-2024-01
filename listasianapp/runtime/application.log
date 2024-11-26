@@ -7950,3 +7950,459 @@ Stack trace:
 REQUEST_URI=/site/GoogleCallback?code=4%2F0AeanS0YJIDCezdz-Aq6apoGt1ly1jT39Kx5HDww6Jr9LMz6HRhD9k8cZGESD5Me51eEy_A&scope=email+profile+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&authuser=0&prompt=consent
 HTTP_REFERER=https://accounts.google.com/
 ---
+2024/11/22 16:55:43 [error] [exception.CDbException] SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it
+2024/11/22 16:55:43 [error] [exception.CDbException] CDbException: CDbConnection failed to open the DB connection. in D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\db\CDbConnection.php:405
+Stack trace:
+#0 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\db\CDbConnection.php(347): CDbConnection->open()
+#1 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\db\CDbConnection.php(325): CDbConnection->setActive(true)
+#2 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CModule.php(394): CDbConnection->init()
+#3 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CApplication.php(459): CModule->getComponent('db')
+#4 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\db\ar\CActiveRecord.php(639): CApplication->getDb()
+#5 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\db\ar\CActiveRecord.php(113): CActiveRecord->getDbConnection()
+#6 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\models\Category.php(183): CActiveRecord->cache(36000, Object(CDbCacheDependency))
+#7 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\controllers\CategoryController.php(198): Category->getTreeViewData()
+#8 [internal function]: CategoryController->actionIndex(NULL, NULL, 0)
+#9 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\actions\CAction.php(109): ReflectionMethod->invokeArgs(Object(CategoryController), Array)
+#10 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\actions\CInlineAction.php(47): CAction->runWithParamsInternal(Object(CategoryController), Object(ReflectionMethod), Array)
+#11 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#12 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(134): CController->runAction(Object(CInlineAction))
+#13 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilter.php(40): CFilterChain->run()
+#14 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(1148): CFilter->filter(Object(CFilterChain))
+#15 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#16 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#17 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(291): CFilterChain->run()
+#18 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#19 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(282): CController->run('index')
+#20 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('category/index')
+#21 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CApplication.php(185): CWebApplication->processRequest()
+#22 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\web\index.php(15): CApplication->run()
+#23 {main}
+REQUEST_URI=/
+---
+2024/11/25 20:59:50 [error] [application] Save failed: Array
+(
+    [country] => Array
+        (
+            [0] => Country cannot be blank.
+        )
+
+    [region] => Array
+        (
+            [0] => Region cannot be blank.
+        )
+
+)
+
+2024/11/26 09:48:10 [error] [exception.CHttpException.400] CHttpException: Your request is invalid. in D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php:1121
+Stack trace:
+#0 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CInlineFilter.php(58): CController->filterPostOnly(Object(CFilterChain))
+#1 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#2 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(291): CFilterChain->run()
+#3 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(282): CController->run('regions')
+#5 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('geo/regions')
+#6 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CApplication.php(185): CWebApplication->processRequest()
+#7 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\web\index.php(15): CApplication->run()
+#8 {main}
+REQUEST_URI=/geo/regions?countryId=2635167
+HTTP_REFERER=http://localhost:8080/advert/create
+---
+2024/11/26 09:48:11 [error] [exception.CHttpException.400] CHttpException: Your request is invalid. in D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php:1121
+Stack trace:
+#0 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CInlineFilter.php(58): CController->filterPostOnly(Object(CFilterChain))
+#1 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#2 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(291): CFilterChain->run()
+#3 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(282): CController->run('regions')
+#5 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('geo/regions')
+#6 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CApplication.php(185): CWebApplication->processRequest()
+#7 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\web\index.php(15): CApplication->run()
+#8 {main}
+REQUEST_URI=/geo/regions?countryId=2635167
+HTTP_REFERER=http://localhost:8080/advert/create
+---
+2024/11/26 09:55:50 [error] [exception.CHttpException.400] CHttpException: Your request is invalid. in D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php:1121
+Stack trace:
+#0 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CInlineFilter.php(58): CController->filterPostOnly(Object(CFilterChain))
+#1 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#2 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(291): CFilterChain->run()
+#3 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(282): CController->run('regions')
+#5 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('geo/regions')
+#6 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CApplication.php(185): CWebApplication->processRequest()
+#7 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\web\index.php(15): CApplication->run()
+#8 {main}
+REQUEST_URI=/geo/regions?countryId=2635167
+---
+2024/11/26 09:56:20 [error] [exception.CHttpException.400] CHttpException: Your request is invalid. in D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php:1121
+Stack trace:
+#0 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CInlineFilter.php(58): CController->filterPostOnly(Object(CFilterChain))
+#1 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#2 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(291): CFilterChain->run()
+#3 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(282): CController->run('regions')
+#5 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('geo/regions')
+#6 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CApplication.php(185): CWebApplication->processRequest()
+#7 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\web\index.php(15): CApplication->run()
+#8 {main}
+REQUEST_URI=/geo/regions?countryId=2635167
+---
+2024/11/26 09:57:28 [error] [exception.CHttpException.400] CHttpException: Your request is invalid. in D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php:1121
+Stack trace:
+#0 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CInlineFilter.php(58): CController->filterPostOnly(Object(CFilterChain))
+#1 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#2 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(291): CFilterChain->run()
+#3 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(282): CController->run('regions')
+#5 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('geo/regions')
+#6 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CApplication.php(185): CWebApplication->processRequest()
+#7 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\web\index.php(15): CApplication->run()
+#8 {main}
+REQUEST_URI=/geo/regions?countryId=2635167%0A
+---
+2024/11/26 10:03:55 [error] [exception.CHttpException.400] CHttpException: Your request is invalid. in D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php:1121
+Stack trace:
+#0 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CInlineFilter.php(58): CController->filterPostOnly(Object(CFilterChain))
+#1 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#2 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(291): CFilterChain->run()
+#3 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(282): CController->run('regions')
+#5 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('geo/regions')
+#6 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CApplication.php(185): CWebApplication->processRequest()
+#7 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\web\index.php(15): CApplication->run()
+#8 {main}
+REQUEST_URI=/geo/regions?countryId=2635167
+HTTP_REFERER=http://localhost:8080/advert/create
+---
+2024/11/26 10:03:56 [error] [exception.CHttpException.400] CHttpException: Your request is invalid. in D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php:1121
+Stack trace:
+#0 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CInlineFilter.php(58): CController->filterPostOnly(Object(CFilterChain))
+#1 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#2 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(291): CFilterChain->run()
+#3 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(282): CController->run('regions')
+#5 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('geo/regions')
+#6 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CApplication.php(185): CWebApplication->processRequest()
+#7 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\web\index.php(15): CApplication->run()
+#8 {main}
+REQUEST_URI=/geo/regions?countryId=2635167
+HTTP_REFERER=http://localhost:8080/advert/create
+---
+2024/11/26 10:10:07 [error] [exception.CHttpException.400] CHttpException: Your request is invalid. in D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php:1121
+Stack trace:
+#0 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CInlineFilter.php(58): CController->filterPostOnly(Object(CFilterChain))
+#1 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#2 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(291): CFilterChain->run()
+#3 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(282): CController->run('regions')
+#5 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('geo/regions')
+#6 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CApplication.php(185): CWebApplication->processRequest()
+#7 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\web\index.php(15): CApplication->run()
+#8 {main}
+REQUEST_URI=/geo/regions?countryId=2635167%0A
+---
+2024/11/26 10:12:56 [error] [exception.CHttpException.400] CHttpException: Your request is invalid. in D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php:1121
+Stack trace:
+#0 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CInlineFilter.php(58): CController->filterPostOnly(Object(CFilterChain))
+#1 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#2 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(291): CFilterChain->run()
+#3 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(282): CController->run('regions')
+#5 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('geo/regions')
+#6 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CApplication.php(185): CWebApplication->processRequest()
+#7 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\web\index.php(15): CApplication->run()
+#8 {main}
+REQUEST_URI=/geo/regions?countryId=2635167
+HTTP_REFERER=http://localhost:8080/advert/create
+---
+2024/11/26 10:12:57 [error] [exception.CHttpException.400] CHttpException: Your request is invalid. in D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php:1121
+Stack trace:
+#0 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CInlineFilter.php(58): CController->filterPostOnly(Object(CFilterChain))
+#1 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#2 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(291): CFilterChain->run()
+#3 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(282): CController->run('regions')
+#5 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('geo/regions')
+#6 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CApplication.php(185): CWebApplication->processRequest()
+#7 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\web\index.php(15): CApplication->run()
+#8 {main}
+REQUEST_URI=/geo/regions?countryId=2635167
+HTTP_REFERER=http://localhost:8080/advert/create
+---
+2024/11/26 10:15:42 [error] [exception.CHttpException.400] CHttpException: Your request is invalid. in D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php:1121
+Stack trace:
+#0 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CInlineFilter.php(58): CController->filterPostOnly(Object(CFilterChain))
+#1 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#2 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(291): CFilterChain->run()
+#3 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(282): CController->run('cities')
+#5 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('geo/cities')
+#6 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CApplication.php(185): CWebApplication->processRequest()
+#7 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\web\index.php(15): CApplication->run()
+#8 {main}
+REQUEST_URI=/geo/cities?regionId=6269131%0A
+---
+2024/11/26 10:16:00 [error] [exception.CHttpException.400] CHttpException: Your request is invalid. in D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php:1121
+Stack trace:
+#0 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CInlineFilter.php(58): CController->filterPostOnly(Object(CFilterChain))
+#1 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#2 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(291): CFilterChain->run()
+#3 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(282): CController->run('cities')
+#5 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('geo/cities')
+#6 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CApplication.php(185): CWebApplication->processRequest()
+#7 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\web\index.php(15): CApplication->run()
+#8 {main}
+REQUEST_URI=/geo/cities?regionId=6269131&username=detahermana%0A
+---
+2024/11/26 10:16:12 [error] [exception.CHttpException.400] CHttpException: Your request is invalid. in D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php:1121
+Stack trace:
+#0 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CInlineFilter.php(58): CController->filterPostOnly(Object(CFilterChain))
+#1 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#2 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(291): CFilterChain->run()
+#3 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(282): CController->run('cities')
+#5 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('geo/cities')
+#6 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CApplication.php(185): CWebApplication->processRequest()
+#7 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\web\index.php(15): CApplication->run()
+#8 {main}
+REQUEST_URI=/geo/cities?regionId=6269131%0A
+---
+2024/11/26 10:19:51 [error] [exception.CHttpException.400] CHttpException: Your request is invalid. in D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php:1121
+Stack trace:
+#0 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CInlineFilter.php(58): CController->filterPostOnly(Object(CFilterChain))
+#1 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#2 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(291): CFilterChain->run()
+#3 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(282): CController->run('regions')
+#5 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('geo/regions')
+#6 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CApplication.php(185): CWebApplication->processRequest()
+#7 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\web\index.php(15): CApplication->run()
+#8 {main}
+REQUEST_URI=/geo/regions?countryId=2635167%0A%0A
+---
+2024/11/26 10:22:38 [error] [exception.CHttpException.400] CHttpException: Your request is invalid. in D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php:1121
+Stack trace:
+#0 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CInlineFilter.php(58): CController->filterPostOnly(Object(CFilterChain))
+#1 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#2 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(291): CFilterChain->run()
+#3 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(282): CController->run('regions')
+#5 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('geo/regions')
+#6 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CApplication.php(185): CWebApplication->processRequest()
+#7 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\web\index.php(15): CApplication->run()
+#8 {main}
+REQUEST_URI=/geo/regions?countryId=2635167
+HTTP_REFERER=http://localhost:8080/advert/create
+---
+2024/11/26 10:30:38 [error] [exception.CHttpException.400] CHttpException: Your request is invalid. in D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php:1121
+Stack trace:
+#0 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CInlineFilter.php(58): CController->filterPostOnly(Object(CFilterChain))
+#1 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#2 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(291): CFilterChain->run()
+#3 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(282): CController->run('regions')
+#5 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('geo/regions')
+#6 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CApplication.php(185): CWebApplication->processRequest()
+#7 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\web\index.php(15): CApplication->run()
+#8 {main}
+REQUEST_URI=/geo/regions?countryId=2635167
+---
+2024/11/26 10:33:15 [error] [exception.CHttpException.400] CHttpException: Your request is invalid. in D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php:1121
+Stack trace:
+#0 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CInlineFilter.php(58): CController->filterPostOnly(Object(CFilterChain))
+#1 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#2 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(291): CFilterChain->run()
+#3 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#4 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(282): CController->run('cities')
+#5 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('geo/cities')
+#6 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CApplication.php(185): CWebApplication->processRequest()
+#7 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\web\index.php(15): CApplication->run()
+#8 {main}
+REQUEST_URI=/geo/cities?regionId=6269131
+---
+2024/11/26 10:38:15 [warning] [application] Region not found: 6269131
+2024/11/26 10:38:15 [error] [application] Failed to fetch region data for 6269131
+2024/11/26 10:38:16 [warning] [application] City not found: 
+2024/11/26 10:38:16 [error] [application] Failed to fetch city data for 
+2024/11/26 10:38:16 [error] [application] Save failed: Array
+(
+    [country] => Array
+        (
+            [0] => Country cannot be blank.
+        )
+
+)
+
+2024/11/26 10:46:50 [warning] [application] Region not found: 6269131
+2024/11/26 10:46:50 [error] [application] Failed to fetch region data for 6269131
+2024/11/26 10:46:51 [warning] [application] City not found: 
+2024/11/26 10:46:51 [error] [application] Failed to fetch city data for 
+2024/11/26 10:46:51 [error] [application] Failed to save Advert: Array
+(
+    [country] => Array
+        (
+            [0] => Country cannot be blank.
+        )
+
+)
+
+2024/11/26 10:48:15 [warning] [application] Region not found: 6269131
+2024/11/26 10:48:15 [error] [application] Failed to fetch region data for 6269131
+2024/11/26 10:48:16 [warning] [application] City not found: 
+2024/11/26 10:48:16 [error] [application] Failed to fetch city data for 
+2024/11/26 10:48:16 [error] [application] Failed to save Advert: Array
+(
+    [country] => Array
+        (
+            [0] => Country cannot be blank.
+        )
+
+)
+
+2024/11/26 11:10:14 [warning] [application] Region not found: 6269131
+2024/11/26 11:10:14 [error] [application] Failed to fetch region data for 6269131
+2024/11/26 11:10:15 [warning] [application] City not found: 
+2024/11/26 11:10:15 [error] [application] Failed to fetch city data for 
+2024/11/26 11:10:15 [error] [application] Failed to save Advert: Array
+(
+    [country] => Array
+        (
+            [0] => Country cannot be blank.
+        )
+
+)
+
+2024/11/26 11:10:33 [error] [application] Missing countryId parameter
+2024/11/26 11:12:24 [warning] [application] Region not found: 6269131
+2024/11/26 11:12:24 [error] [application] Failed to fetch region data for 6269131
+2024/11/26 11:12:25 [warning] [application] City not found: 
+2024/11/26 11:12:25 [error] [application] Failed to fetch city data for 
+2024/11/26 11:12:25 [error] [application] Failed to save Advert: Array
+(
+    [country] => Array
+        (
+            [0] => Country cannot be blank.
+        )
+
+)
+
+2024/11/26 11:33:09 [warning] [application] Region not found: 6269131
+2024/11/26 11:33:09 [error] [application] Failed to fetch region data for 6269131
+2024/11/26 11:33:10 [warning] [application] City not found: 
+2024/11/26 11:33:10 [error] [application] Failed to fetch city data for 
+2024/11/26 11:33:10 [error] [application] Failed to save Advert: Array
+(
+    [country] => Array
+        (
+            [0] => Country cannot be blank.
+        )
+
+)
+
+2024/11/26 11:35:13 [warning] [application] Region not found: 6269131
+2024/11/26 11:35:13 [error] [application] Failed to fetch region data for 6269131
+2024/11/26 11:35:14 [warning] [application] City not found: 
+2024/11/26 11:35:14 [error] [application] Failed to fetch city data for 
+2024/11/26 11:35:15 [warning] [application] Region not found: 6269131
+2024/11/26 11:35:15 [error] [application] Failed to fetch region data for 6269131
+2024/11/26 11:35:15 [warning] [application] City not found: 
+2024/11/26 11:35:15 [error] [application] Failed to fetch city data for 
+2024/11/26 11:35:57 [warning] [application] Region not found: 6269131
+2024/11/26 11:35:57 [error] [application] Failed to fetch region data for 6269131
+2024/11/26 11:35:58 [warning] [application] City not found: 
+2024/11/26 11:35:58 [error] [application] Failed to fetch city data for 
+2024/11/26 11:35:58 [warning] [application] Region not found: 6269131
+2024/11/26 11:35:58 [error] [application] Failed to fetch region data for 6269131
+2024/11/26 11:35:59 [warning] [application] City not found: 
+2024/11/26 11:35:59 [error] [application] Failed to fetch city data for 
+2024/11/26 11:35:59 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`adamdz_asiandi`.`advert`, CONSTRAINT `Advert_ibfk_2` FOREIGN KEY (`package`) REFERENCES `price` (`id`)). The SQL statement executed was: INSERT INTO `Advert` (`rating`, `active`, `paid`, `country`, `region`, `country_id`, `region_id`, `city_id`, `category_id`, `name`, `address`, `postcode`, `telephone`, `fax`, `web`, `email`, `lat`, `lng`, `description`, `manager_name`, `mobile`, `facebook_url`, `twitter_url`, `instagram_url`, `gplus_url`, `youtube_url`, `pinterest_url`, `seo_keywords`, `seo_description`, `country_name`, `start_date`, `update_time`, `expiry_date`, `user_id`, `seo1`, `seo2`) VALUES (:yp0, :yp1, :yp2, :yp3, :yp4, :yp5, :yp6, :yp7, :yp8, :yp9, :yp10, :yp11, :yp12, :yp13, :yp14, :yp15, :yp16, :yp17, :yp18, :yp19, :yp20, :yp21, :yp22, :yp23, :yp24, :yp25, :yp26, :yp27, :yp28, :yp29, NOW(), NOW(), DATE_ADD(NOW(), INTERVAL 1 YEAR), :yp30, :yp31, :yp32).
+2024/11/26 11:35:59 [error] [exception.CDbException] CDbException: CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`adamdz_asiandi`.`advert`, CONSTRAINT `Advert_ibfk_2` FOREIGN KEY (`package`) REFERENCES `price` (`id`)) in D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\db\CDbCommand.php:358
+Stack trace:
+#0 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\db\ar\CActiveRecord.php(1083): CDbCommand->execute()
+#1 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\db\ar\CActiveRecord.php(811): CActiveRecord->insert(NULL)
+#2 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\controllers\AdvertController.php(151): CActiveRecord->save()
+#3 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\actions\CInlineAction.php(49): AdvertController->actionCreate()
+#4 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#5 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(134): CController->runAction(Object(CInlineAction))
+#6 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilter.php(40): CFilterChain->run()
+#7 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(1148): CFilter->filter(Object(CFilterChain))
+#8 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#9 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#10 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(291): CFilterChain->run()
+#11 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#12 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(282): CController->run('create')
+#13 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('advert/create')
+#14 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CApplication.php(185): CWebApplication->processRequest()
+#15 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\web\index.php(15): CApplication->run()
+#16 {main}
+REQUEST_URI=/advert/create
+HTTP_REFERER=http://localhost:8080/advert/create
+---
+2024/11/26 11:36:46 [warning] [application] Region not found: 6269131
+2024/11/26 11:36:46 [error] [application] Failed to fetch region data for 6269131
+2024/11/26 11:36:47 [warning] [application] City not found: 
+2024/11/26 11:36:47 [error] [application] Failed to fetch city data for 
+2024/11/26 11:36:47 [warning] [application] Region not found: 6269131
+2024/11/26 11:36:47 [error] [application] Failed to fetch region data for 6269131
+2024/11/26 11:36:48 [warning] [application] City not found: 
+2024/11/26 11:36:48 [error] [application] Failed to fetch city data for 
+2024/11/26 11:43:02 [warning] [application] Region not found: 6269131
+2024/11/26 11:43:02 [error] [application] Failed to fetch region data for 6269131
+2024/11/26 11:43:03 [warning] [application] City not found: 
+2024/11/26 11:43:03 [error] [application] Failed to fetch city data for 
+2024/11/26 11:43:03 [warning] [application] Region not found: 6269131
+2024/11/26 11:43:03 [error] [application] Failed to fetch region data for 6269131
+2024/11/26 11:43:04 [warning] [application] City not found: 
+2024/11/26 11:43:04 [error] [application] Failed to fetch city data for 
+2024/11/26 11:43:41 [warning] [application] Region not found: 6269131
+2024/11/26 11:43:41 [error] [application] Failed to fetch region data for 6269131
+2024/11/26 11:43:42 [warning] [application] City not found: 
+2024/11/26 11:43:42 [error] [application] Failed to fetch city data for 
+2024/11/26 11:43:42 [warning] [application] Region not found: 6269131
+2024/11/26 11:43:42 [error] [application] Failed to fetch region data for 6269131
+2024/11/26 11:43:43 [warning] [application] City not found: 
+2024/11/26 11:43:43 [error] [application] Failed to fetch city data for 
+2024/11/26 11:43:43 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`adamdz_asiandi`.`advert`, CONSTRAINT `Advert_ibfk_2` FOREIGN KEY (`package`) REFERENCES `price` (`id`)). The SQL statement executed was: INSERT INTO `Advert` (`rating`, `active`, `paid`, `country`, `region`, `country_id`, `region_id`, `city_id`, `category_id`, `name`, `address`, `postcode`, `telephone`, `fax`, `web`, `email`, `lat`, `lng`, `description`, `manager_name`, `mobile`, `facebook_url`, `twitter_url`, `instagram_url`, `gplus_url`, `youtube_url`, `pinterest_url`, `seo_keywords`, `seo_description`, `country_name`, `start_date`, `update_time`, `expiry_date`, `user_id`, `seo1`, `seo2`) VALUES (:yp0, :yp1, :yp2, :yp3, :yp4, :yp5, :yp6, :yp7, :yp8, :yp9, :yp10, :yp11, :yp12, :yp13, :yp14, :yp15, :yp16, :yp17, :yp18, :yp19, :yp20, :yp21, :yp22, :yp23, :yp24, :yp25, :yp26, :yp27, :yp28, :yp29, NOW(), NOW(), DATE_ADD(NOW(), INTERVAL 1 YEAR), :yp30, :yp31, :yp32).
+2024/11/26 11:43:43 [error] [exception.CDbException] CDbException: CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`adamdz_asiandi`.`advert`, CONSTRAINT `Advert_ibfk_2` FOREIGN KEY (`package`) REFERENCES `price` (`id`)) in D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\db\CDbCommand.php:358
+Stack trace:
+#0 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\db\ar\CActiveRecord.php(1083): CDbCommand->execute()
+#1 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\db\ar\CActiveRecord.php(811): CActiveRecord->insert(NULL)
+#2 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\controllers\AdvertController.php(151): CActiveRecord->save()
+#3 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\actions\CInlineAction.php(49): AdvertController->actionCreate()
+#4 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(308): CInlineAction->runWithParams(Array)
+#5 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(134): CController->runAction(Object(CInlineAction))
+#6 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilter.php(40): CFilterChain->run()
+#7 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(1148): CFilter->filter(Object(CFilterChain))
+#8 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CInlineFilter.php(58): CController->filterAccessControl(Object(CFilterChain))
+#9 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\filters\CFilterChain.php(131): CInlineFilter->filter(Object(CFilterChain))
+#10 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(291): CFilterChain->run()
+#11 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CController.php(265): CController->runActionWithFilters(Object(CInlineAction), Array)
+#12 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(282): CController->run('create')
+#13 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\web\CWebApplication.php(141): CWebApplication->runController('advert/create')
+#14 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\vendor\yiisoft\yii\framework\base\CApplication.php(185): CWebApplication->processRequest()
+#15 D:\freelance\zioncloud\project\web\asian directory\ADA-2024-01\listasianapp\web\index.php(15): CApplication->run()
+#16 {main}
+REQUEST_URI=/advert/create
+HTTP_REFERER=http://localhost:8080/advert/create
+---
+2024/11/26 11:45:23 [error] [application] Missing countryId parameter
+2024/11/26 11:46:12 [error] [application] Missing countryId parameter
+2024/11/26 11:58:07 [warning] [application] Region not found: 6269131
+2024/11/26 11:58:07 [error] [application] Failed to fetch region data for 6269131
+2024/11/26 11:58:08 [warning] [application] City not found: 
+2024/11/26 11:58:08 [error] [application] Failed to fetch city data for 
+2024/11/26 11:58:08 [warning] [application] Region not found: 6269131
+2024/11/26 11:58:08 [error] [application] Failed to fetch region data for 6269131
+2024/11/26 11:58:09 [warning] [application] City not found: 
+2024/11/26 11:58:09 [error] [application] Failed to fetch city data for 
+2024/11/26 12:26:04 [error] [application] Missing countryId parameter
+2024/11/26 12:29:29 [warning] [application] Region not found: 6269131
+2024/11/26 12:29:29 [error] [application] Failed to fetch region data for 6269131
+2024/11/26 12:29:30 [warning] [application] City not found: 
+2024/11/26 12:29:30 [error] [application] Failed to fetch city data for 
+2024/11/26 12:29:30 [warning] [application] Region not found: 6269131
+2024/11/26 12:29:30 [warning] [application] Region not found, setting default value
+2024/11/26 12:29:31 [error] [application] GeoNames response is empty for regionId 
+2024/11/26 12:29:31 [warning] [application] City not found, setting default value
+2024/11/26 13:55:01 [error] [application] Missing countryId parameter

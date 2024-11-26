@@ -112,7 +112,7 @@ $config = array(
             'showScriptName'=>false,
             'rules'=>CMap::mergeArray(
                 require __DIR__.'/routes.php',
-                require __DIR__.'/../vendor/starship/restfullyii/starship/RestfullYii/config/routes.php'
+                require __DIR__.'/../vendor/starship/restfullyii/starship/RestfullYii/config/routes.php',
             ),
         ),
         'errorHandler'=>array(

@@ -116,23 +116,37 @@ class Advert extends CActiveRecord
     {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
-        return array(
-            array('name, address, postcode, telephone, description, country, region, category_id', 'required'),
-            array('category_id, country_id, region_id, city_id, sub_region_id', 'numerical', 'integerOnly'=>true),
-            array('package', 'numerical', 'integerOnly'=>true, 'on'=>'insert'),
-            array('lat, lng', 'numerical'),
-            array('name, manager_name, email', 'length', 'max'=>100),
-            array('address, web, previewFile, seo_keywords, seo_description', 'length', 'max'=>200),
-            array('postcode, telephone, fax, mobile, country, region', 'length', 'max'=>20),
-            array('file', 'file', 'types'=>'jpg, jpeg, png, gif', 'allowEmpty'=>true, 'maxSize'=>2 * 1024 * 1024),// 640 x 250
-            array('email', 'email'),
+        return [
+            // Required fields
+            ['name, address, postcode, telephone, description, country, region, category_id', 'required'],
+            ['categoryList', 'required', 'message' => 'Please select at least one subcategory.'],
+
+            // Default values for fields
+            ['country', 'default', 'value' => 'United Kingdom'],
+
+            // Numerical validation
+            ['category_id, country_id, region_id, city_id, sub_region_id, package, active, paid, rating', 'numerical', 'integerOnly' => true],
+            ['lat, lng', 'numerical'],
+
+            // Length validation
+            ['name, manager_name, email', 'length', 'max' => 100],
+            ['address, web, previewFile, seo_keywords, seo_description', 'length', 'max' => 200],
+            ['postcode, telephone, fax, mobile, country, region', 'length', 'max' => 20],
+
+            // File validation
+            ['file', 'file', 'types' => 'jpg, jpeg, png, gif', 'allowEmpty' => true, 'maxSize' => 2 * 1024 * 1024],
+
+            // URL and Email validation
+            ['email', 'email'],
             ['web, facebook_url, twitter_url, instagram_url, gplus_url, youtube_url, pinterest_url', 'url', 'defaultScheme' => 'http'],
-            ['categoryList', 'required', 'message'=>'Empty'],
-            ['package, active, paid, expiry_date, user_id', 'safe', 'on'=>'admin'], //only for admin
-            ['rating', 'numerical', 'integerOnly'=>true, 'on'=>'admin', 'min'=>0, 'max'=>5],
-            // The following rule is used by search().
-            array('id, user_id, name, manager_name, mobile, telephone, web, email, rating, seo1, seo2, start_date, expiry_date, active, paid', 'safe', 'on'=>'search'),
-        );
+
+            // Safe attributes for specific scenarios
+            ['package, active, paid, expiry_date, user_id', 'safe', 'on' => 'admin'],
+            ['rating', 'numerical', 'integerOnly' => true, 'on' => 'admin', 'min' => 0, 'max' => 5],
+
+            // Attributes for search
+            ['id, user_id, name, manager_name, mobile, telephone, web, email, rating, seo1, seo2, start_date, expiry_date, active, paid', 'safe', 'on' => 'search'],
+        ];
     }
 
     /**
@@ -147,7 +161,7 @@ class Advert extends CActiveRecord
             'category'    => [self::BELONGS_TO, 'Category', 'category_id'],
             'user'        => [self::BELONGS_TO, 'User', 'user_id'],
             'price'       => [self::BELONGS_TO, 'Price', 'package'],
-            'subRegion'   => [self::BELONGS_TO, 'SubRegion', 'sub_region_id']
+            // 'subRegion'   => [self::BELONGS_TO, 'SubRegion', 'sub_region_id']
         );
     }
 
@@ -250,7 +264,7 @@ class Advert extends CActiveRecord
     {
         Yii::log('Country value in beforeSave: ' . $this->country, CLogger::LEVEL_INFO);
         if (parent::beforeSave()) {
-
+            
             Yii::log('beforeSave called', CLogger::LEVEL_INFO);
 
             if ($this->isNewRecord) {
@@ -274,25 +288,30 @@ class Advert extends CActiveRecord
             Yii::log('Country: ' . $this->country, CLogger::LEVEL_INFO);
             Yii::log('Region: ' . $this->region, CLogger::LEVEL_INFO);
 
-            // Automatically set country_id and country_name
-            $countryData = Geo::getCountryData($this->country);
+            $countryData = Geo::getCountryData('United Kingdom');
             if ($countryData) {
                 $this->country_id = $countryData['country_id'];
                 $this->country_name = $countryData['country_name'];
             }
 
-            // Automatically set region_id based on region name and country_id
             $regionData = Geo::getRegionData($this->region, $this->country_id);
             if ($regionData) {
                 $this->region_id = $regionData['region_id'];
                 $this->region = $regionData['region_code'];
+            } else {
+                Yii::log('Region not found, setting default value', CLogger::LEVEL_WARNING);
+                $this->region_id = null;
+                $this->region = 'Unknown Region';
             }
 
-            // Automatically set city_id and city_name
             $cityData = Geo::getCityData($this->city_name, $this->country_id, $this->region_id);
             if ($cityData) {
                 $this->city_id = $cityData['city_id'];
                 $this->city_name = $cityData['city_name'];
+            } else {
+                Yii::log('City not found, setting default value', CLogger::LEVEL_WARNING);
+                $this->city_id = null;
+                $this->city_name = 'Unknown City';
             }
 
             // Get coordinates if not set
@@ -445,6 +464,7 @@ class Advert extends CActiveRecord
     {
         parent::afterDelete();
         $this->deleteImage();
+        Yii::log("Advert deleted: {$this->id}", CLogger::LEVEL_INFO);
         Yii::app()->cache->delete(__CLASS__ . $this->id);
     }
 
@@ -682,11 +702,10 @@ class Advert extends CActiveRecord
 
     public function purchase($planId)
     {
-        // Menginisialisasi objek Opay untuk memproses pembayaran melalui PayPal
         $opay = new Opay();
         try {
-            $opay->purchase($this->id); // Memanggil metode purchase di Opay dengan ID iklan
-            $this->setPaid('year'); // Menetapkan status 'paid' dan mengatur interval langganan
+            $opay->purchase($this->id);
+            $this->setPaid('year');
 
         } catch (Exception $e) {
             throw new CHttpException(500, 'Payment failed: ' . $e->getMessage());
@@ -727,20 +746,25 @@ class Advert extends CActiveRecord
 
     private function getCoordinatesFromAddress($address)
     {
-        $apiKey = Yii::app()->params['locationiq.api_key'];
-        $apiUrl = "https://us1.locationiq.com/v1/search.php?key={$apiKey}&q=" . urlencode($address) . "&format=json";
+        $apiKey = Yii::app()->params['mapbox.api_key'];
+        $apiUrl = sprintf(
+            "https://api.mapbox.com/geocoding/v5/mapbox.places/%s.json?access_token=%s&limit=1",
+            urlencode($address),
+            $apiKey
+        );
 
         try {
             $response = file_get_contents($apiUrl);
             $data = json_decode($response, true);
-            if (!empty($data) && isset($data[0]['lat']) && isset($data[0]['lon'])) {
+
+            if (!empty($data['features']) && isset($data['features'][0]['geometry']['coordinates'])) {
                 return [
-                    'lat' => $data[0]['lat'],
-                    'lng' => $data[0]['lon'],
+                    'lng' => $data['features'][0]['geometry']['coordinates'][0],
+                    'lat' => $data['features'][0]['geometry']['coordinates'][1],
                 ];
             }
         } catch (Exception $e) {
-            Yii::log("Failed to fetch coordinates: " . $e->getMessage(), CLogger::LEVEL_ERROR);
+            Yii::log("Failed to fetch coordinates from Mapbox: " . $e->getMessage(), CLogger::LEVEL_ERROR);
         }
 
         return null;
