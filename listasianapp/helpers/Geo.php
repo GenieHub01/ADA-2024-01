@@ -2,13 +2,15 @@
 
 class Geo
 {
-    /**
-     * Fetch country data by name.
-     * @param string $countryName
-     * @return array|null Returns an array with 'country_id' and 'country_name' or null if not found.
-     */
-    public static function getCountryData($countryName)
+    public static function getCountryData($countryName = 'United Kingdom')
     {
+        if (strtolower($countryName) === 'united kingdom') {
+            return [
+                'country_id' => 2635167, // GeoName ID for United Kingdom
+                'country_name' => 'United Kingdom',
+            ];
+        }
+
         $sql = "SELECT id AS country_id, name AS country_name FROM country WHERE name = :name";
         $command = Yii::app()->db->createCommand($sql);
         $command->bindParam(":name", $countryName, PDO::PARAM_STR);
@@ -17,92 +19,79 @@ class Geo
         return $country !== false ? $country : null;
     }
 
-    /**
-     * Fetch region data by name and country_id.
-     * @param string $regionName
-     * @param int $countryId
-     * @return array|null Returns an array with 'region_id' and 'region_code' or null if not found.
-     */
     public static function getRegionData($regionName, $countryId)
     {
-        $sql = "SELECT id AS region_id, code AS region_code FROM region WHERE name = :name AND country_id = :country_id";
-        $command = Yii::app()->db->createCommand($sql);
-        $command->bindParam(":name", $regionName, PDO::PARAM_STR);
-        $command->bindParam(":country_id", $countryId, PDO::PARAM_INT);
-        $region = $command->queryRow();
+        $username = Yii::app()->params['geonames.username'];
+        $url = "http://api.geonames.org/childrenJSON?geonameId={$countryId}&username={$username}";
 
-        return $region !== false ? $region : null;
-    }
-
-    /**
-     * .
-     * @param int $country_id
-     * @return string|null
-     */
-    public static function getCountryCode($country_id)
-    {
-        $sql = "SELECT code FROM country WHERE id = :id";
-        $command = Yii::app()->db->createCommand($sql);
-        $command->bindParam(":id", $country_id, PDO::PARAM_INT);
-        $result = $command->queryRow();
-
-        return $result !== false ? $result['code'] : null;
-    }
-
-    /**
-     * 
-     * @param int $region_id
-     * @return string|null
-     */
-    public static function getRegionCode($region_id)
-    {
-        $sql = "SELECT code FROM region WHERE id = :id";
-        $command = Yii::app()->db->createCommand($sql);
-        $command->bindParam(":id", $region_id, PDO::PARAM_INT);
-        $result = $command->queryRow();
-
-        return $result !== false ? $result['code'] : null;
-    }
-
-    /**
-     * 
-     * @param string $cityName
-     * @param int $countryId
-     * @param int $regionId
-     * @return array|null
-     */
-    public static function getCityData($cityName, $country_id, $region_id)
-    {
-        $apiKey = Yii::app()->params['locationiq.api_key'];
-        $countryCode = self::getCountryCode($country_id);
-        $stateCode = self::getRegionCode($region_id);
-        
-        if ($countryCode === null || $stateCode === null) {
+        $response = file_get_contents($url);
+        if ($response === false) {
+            Yii::log("Failed to fetch regions from GeoNames for countryId {$countryId}", CLogger::LEVEL_ERROR);
             return null;
         }
 
-        $url = "https://us1.locationiq.com/v1/autocomplete.php?key={$apiKey}&q=" . urlencode($cityName) . "&countrycodes={$countryCode}&state={$stateCode}&limit=1&format=json";
+        $data = json_decode($response, true);
+        if (empty($data['geonames'])) {
+            Yii::log("GeoNames response is empty for countryId {$countryId}", CLogger::LEVEL_ERROR);
+            return null;
+        }
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        foreach ($data['geonames'] as $region) {
+            if (isset($region['name']) && strtolower($region['name']) === strtolower($regionName)) {
+                return [
+                    'region_id' => $region['geonameId'],
+                    'region_code' => $region['adminCode1'] ?? null,
+                ];
+            }
+        }
 
-        $response = curl_exec($ch);
-        curl_close($ch);
+        Yii::log("Region not found: {$regionName}", CLogger::LEVEL_WARNING);
+        return null;
+    }
 
+    public static function getRegionCode($region_id)
+    {
+        $username = Yii::app()->params['geonames.username'];
+        $url = "http://api.geonames.org/getJSON?geonameId={$region_id}&username={$username}";
+
+        $response = file_get_contents($url);
         if ($response === false) {
+            Yii::log("Failed to fetch region code from GeoNames for region_id {$region_id}", CLogger::LEVEL_ERROR);
             return null;
         }
 
         $data = json_decode($response, true);
 
-        if (isset($data[0]['place_id']) && isset($data[0]['display_name'])) {
-            return [
-                'city_id' => $data[0]['place_id'],
-                'city_name' => $data[0]['display_name'],
-            ];
+        return $data['adminCode1'] ?? null;
+    }
+
+    public static function getCityData($cityName, $countryId, $regionId)
+    {
+        $username = Yii::app()->params['geonames.username'];
+        $url = "http://api.geonames.org/childrenJSON?geonameId={$regionId}&username={$username}";
+
+        $response = file_get_contents($url);
+        if ($response === false) {
+            Yii::log("Failed to fetch cities from GeoNames for regionId {$regionId}", CLogger::LEVEL_ERROR);
+            return null;
         }
 
+        $data = json_decode($response, true);
+        if (empty($data['geonames'])) {
+            Yii::log("GeoNames response is empty for regionId {$regionId}", CLogger::LEVEL_ERROR);
+            return null;
+        }
+
+        foreach ($data['geonames'] as $city) {
+            if (isset($city['name']) && strtolower($city['name']) === strtolower($cityName)) {
+                return [
+                    'city_id' => $city['geonameId'],
+                    'city_name' => $city['name'],
+                ];
+            }
+        }
+
+        Yii::log("City not found: {$cityName}", CLogger::LEVEL_WARNING);
         return null;
     }
 }

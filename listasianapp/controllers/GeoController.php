@@ -5,48 +5,120 @@ class GeoController extends Controller
     public function filters()
     {
         return [
-            'postOnly'
+            [
+                'RestfullYii.filters.ERestFilter + REST.GET, REST.PUT, REST.POST, REST.OPTIONS',
+            ],
+            [
+                'postOnly + delete, payTracking',
+            ],
         ];
     }
 
     public function actionCountries()
     {
-        $data = Geo::getCountryData('');
+        $data = Geo::getCountryData();
 
         echo CHtml::tag('option', ['value' => ''], 'Select country', true);
 
         if ($data !== null) {
-            echo CHtml::tag('option', ['value' => $data['country_id']], CHtml::encode($data['country_name']), true);
+            echo CHtml::tag('option', [
+                'value' => $data['country_id']
+            ], CHtml::encode($data['country_name']), true);
         }
     }
 
     public function actionRegions()
     {
-        $countryId = $this->getValueFromPost('country_id');
-        $regionName = $this->getValueFromPost('region_name');
+        $countryId = Yii::app()->request->getQuery('countryId');
 
-        $data = Geo::getRegionData($regionName, $countryId);
-
-        echo CHtml::tag('option', ['value' => ''], 'Select region', true);
-
-        if ($data !== null) {
-            echo CHtml::tag('option', ['value' => $data['region_id']], CHtml::encode($data['region_code']), true);
+        if (!$countryId) {
+            Yii::log('Missing countryId parameter', CLogger::LEVEL_ERROR);
+            echo CJSON::encode(['error' => 'Missing countryId parameter']);
+            Yii::app()->end();
         }
+
+        Yii::log("Received countryId: {$countryId}", CLogger::LEVEL_INFO);
+        
+        $username = Yii::app()->params['geonames.username'];
+        $url = "http://api.geonames.org/childrenJSON?geonameId={$countryId}&username={$username}";
+
+        Yii::log("Fetching regions from URL: {$url}", CLogger::LEVEL_INFO);
+
+        $response = @file_get_contents($url);
+        if ($response === false) {
+            Yii::log("Failed to fetch regions for countryId {$countryId}", CLogger::LEVEL_ERROR);
+            echo CJSON::encode(['error' => 'Failed to fetch regions']);
+            return;
+        }
+
+        $data = json_decode($response, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            Yii::log("Invalid JSON response: " . $response, CLogger::LEVEL_ERROR);
+            echo CJSON::encode(['error' => 'Invalid JSON response from GeoNames API']);
+            return;
+        }
+
+        $regions = [];
+        if (isset($data['geonames']) && is_array($data['geonames'])) {
+            foreach ($data['geonames'] as $region) {
+                $regions[] = [
+                    'id' => $region['geonameId'],
+                    'name' => $region['name'],
+                ];
+            }
+        }
+
+        if (empty($regions)) {
+            Yii::log("No regions found for countryId {$countryId}", CLogger::LEVEL_WARNING);
+        }
+
+        echo CJSON::encode($regions);
     }
 
     public function actionCities()
     {
-        $countryId = $this->getValueFromPost('country_id');
-        $regionId = $this->getValueFromPost('region_id');
-        $cityName = $this->getValueFromPost('city_name');
+        $regionId = Yii::app()->request->getQuery('regionId');
 
-        $data = Geo::getCityData($cityName, $countryId, $regionId);
-
-        echo CHtml::tag('option', ['value' => ''], 'Select city', true);
-
-        if ($data !== null) {
-            echo CHtml::tag('option', ['value' => $data['city_id']], CHtml::encode($data['city_name']), true);
+        if (!$regionId) {
+            Yii::log('Missing regionId parameter', CLogger::LEVEL_ERROR);
+            echo CJSON::encode(['error' => 'Missing regionId parameter']);
+            Yii::app()->end();
         }
+
+        Yii::log("Received regionId: {$regionId}", CLogger::LEVEL_INFO);
+
+        $username = Yii::app()->params['geonames.username'];
+        $url = "http://api.geonames.org/childrenJSON?geonameId={$regionId}&username={$username}";
+
+        $response = @file_get_contents($url);
+        if ($response === false) {
+            Yii::log("Failed to fetch cities for regionId {$regionId}", CLogger::LEVEL_ERROR);
+            echo CJSON::encode(['error' => 'Failed to fetch cities']);
+            return;
+        }
+
+        $data = json_decode($response, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            Yii::log("Invalid JSON response: " . $response, CLogger::LEVEL_ERROR);
+            echo CJSON::encode(['error' => 'Invalid JSON response from GeoNames API']);
+            return;
+        }
+
+        $cities = [];
+        if (isset($data['geonames']) && is_array($data['geonames'])) {
+            foreach ($data['geonames'] as $city) {
+                $cities[] = [
+                    'id' => $city['geonameId'],
+                    'name' => $city['name'],
+                ];
+            }
+        }
+
+        if (empty($cities)) {
+            Yii::log("No cities found for regionId {$regionId}", CLogger::LEVEL_WARNING);
+        }
+
+        echo CJSON::encode($cities);
     }
 
     /**
@@ -54,19 +126,42 @@ class GeoController extends Controller
      */
     public function actionGetCountryCode()
     {
-        if (isset($_GET['country_name'])) {
-            $countryName = $_GET['country_name'];
+        $countryName = Yii::app()->request->getQuery('country_name');
 
-            $command = Yii::app()->db->createCommand("SELECT code FROM Country WHERE name = :name");
-            $command->bindParam(":name", $countryName, PDO::PARAM_STR);
-            $countryCode = $command->queryScalar();
+        if (!$countryName) {
+            echo json_encode(['code' => '']);
+            return;
+        }
 
-            if ($countryCode !== false) {
-                echo json_encode(['code' => $countryCode]);
-            } else {
-                echo json_encode(['code' => '']);
-            }
+        if (strtolower($countryName) === 'united kingdom') {
+            echo json_encode(['code' => 'GB']); // ISO Code for UK
+            return;
+        }
+
+        $command = Yii::app()->db->createCommand("SELECT code FROM country WHERE name = :name");
+        $command->bindParam(":name", $countryName, PDO::PARAM_STR);
+        $countryCode = $command->queryScalar();
+
+        if ($countryCode !== false) {
+            echo json_encode(['code' => $countryCode]);
+            return;
+        }
+
+        $username = Yii::app()->params['geonames.username'];
+        $url = "http://api.geonames.org/searchJSON?name_equals=" . urlencode($countryName) . "&featureClass=A&maxRows=1&username={$username}";
+
+        $response = @file_get_contents($url);
+        if ($response === false) {
+            Yii::log("Failed to fetch country code from GeoNames for country_name {$countryName}", CLogger::LEVEL_ERROR);
+            echo json_encode(['code' => '']);
+            return;
+        }
+
+        $data = json_decode($response, true);
+        if (isset($data['geonames'][0]['countryCode'])) {
+            echo json_encode(['code' => $data['geonames'][0]['countryCode']]);
         } else {
+            Yii::log("Country code not found for {$countryName}", CLogger::LEVEL_WARNING);
             echo json_encode(['code' => '']);
         }
     }

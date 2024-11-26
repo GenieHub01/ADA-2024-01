@@ -77,29 +77,40 @@ $this->seo_description = $model->getSeoDescription();
     <div id="map"></div>
 </div>
 
-<!-- Leaflet JS dan CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<!-- Mapbox GL JS CSS -->
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+
+<!-- Mapbox GL JS JavaScript -->
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
 
 <script>
     function initMap() {
         console.log("Initializing map...");
 
-        var map = L.map('map').setView([0, 0], 15);
+        // API Key Mapbox
+        const apiKey = "<?= Yii::app()->params['mapbox.api_key']; ?>";
+
+        mapboxgl.accessToken = apiKey;
+
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [0, 0],
+            zoom: 15,
+        });
         console.log("Map initialized with default coordinates (0,0)");
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-        }).addTo(map);
-
-        var marker = L.marker([0, 0]).addTo(map);
+        // Marker
+        const marker = new mapboxgl.Marker()
+            .setLngLat([0, 0])
+            .addTo(map);
         console.log("Marker initialized at default coordinates (0,0)");
 
         function updateMap(lat, lng, address = null) {
             if (lat && lng) {
-                const location = [parseFloat(lat), parseFloat(lng)];
-                map.setView(location, 15);
-                marker.setLatLng(location);
+                const location = [parseFloat(lng), parseFloat(lat)];
+                map.setCenter(location);
+                marker.setLngLat(location);
                 console.log('Map updated directly to lat/lng:', lat, lng);
             } else if (address) {
                 console.log(`Attempting to update map for address: ${address}`);
@@ -111,23 +122,22 @@ $this->seo_description = $model->getSeoDescription();
                     return;
                 }
 
-                const apiKey = "<?= Yii::app()->params['locationiq.api_key']; ?>";
-                const url = `https://us1.locationiq.com/v1/search.php?key=${apiKey}&q=${encodeURIComponent(address)}&countrycodes=${country}&format=json`;
-                console.log("Fetching location data from LocationIQ with URL:", url);
+                const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${apiKey}&limit=1&country=${country}`;
+                console.log("Fetching location data from Mapbox Geocoding API with URL:", url);
 
                 fetch(url)
                     .then(response => response.json())
                     .then(data => {
-                        if (data && data.length > 0) {
-                            const location = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
-                            map.setView(location, 15);
-                            marker.setLatLng(location);
-                            console.log('Map updated to address location:', location[0], location[1]);
+                        if (data && data.features && data.features.length > 0) {
+                            const coordinates = data.features[0].center;
+                            map.setCenter(coordinates);
+                            marker.setLngLat(coordinates);
+                            console.log('Map updated to address location:', coordinates[1], coordinates[0]);
                         } else {
                             console.error('Location not found for the given address.');
                         }
                     })
-                    .catch(error => console.error('Error fetching location data from LocationIQ:', error));
+                    .catch(error => console.error('Error fetching location data from Mapbox:', error));
             } else {
                 console.error("No valid location data available to update map.");
             }

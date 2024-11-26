@@ -19,6 +19,4 @@ yarn-error.log
 /.idea
 /.vscode
 /.zed
-/database/migrations
-/database/seeders
-/dbdump
+/config/providers.php

@@ -17,6 +17,7 @@ return [
     '<type:(platinum|silver)>/<url:[-\w]+>' => 'category/paidAdverts',
     '<page:\d+>' => 'category/index',
     '' => 'category/index',
+    'geo/regions' => 'geo/regions',
 
     //json api2
 //    'api1.1/<name:\w+>'=>

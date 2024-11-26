@@ -98,7 +98,7 @@ class AdvertController extends Controller
      */
     public function actionCreate()
     {
-        $model=new Advert;
+        $model = new Advert;
 
         if (Yii::app()->user->checkAccess(User::ROLE_ADMIN)) {
             $model->scenario = 'admin';
@@ -136,7 +136,7 @@ class AdvertController extends Controller
 
         if (isset($_POST['Advert'])) {
             Yii::log('POST data: ' . print_r($_POST['Advert'], true), CLogger::LEVEL_INFO);
-            Yii::log('Country value before save: ' . $model->country, CLogger::LEVEL_INFO);
+
             $model->attributes = $_POST['Advert'];
             $model->file = CUploadedFile::getInstance($model, 'file');
 
@@ -145,23 +145,29 @@ class AdvertController extends Controller
                 ? $_POST['Advert']['categoryList']
                 : [];
 
-            // Fetch country, region, and city data
-            $countryData = Geo::getCountryData($model->country_name);
+            // Fetch country, region, and city data using Geo
+            $countryData = Geo::getCountryData('United Kingdom');
             if ($countryData) {
                 $model->country_id = $countryData['country_id'];
                 $model->country_name = $countryData['country_name'];
+            } else {
+                Yii::log("Failed to fetch country data for United Kingdom", CLogger::LEVEL_ERROR);
             }
 
             $regionData = Geo::getRegionData($model->region, $model->country_id);
             if ($regionData) {
                 $model->region_id = $regionData['region_id'];
                 $model->region = $regionData['region_code'];
+            } else {
+                Yii::log("Failed to fetch region data for {$model->region}", CLogger::LEVEL_ERROR);
             }
 
             $cityData = Geo::getCityData($model->city_name, $model->country_id, $model->region_id);
             if ($cityData) {
                 $model->city_id = $cityData['city_id'];
                 $model->city_name = $cityData['city_name'];
+            } else {
+                Yii::log("Failed to fetch city data for {$model->city_name}", CLogger::LEVEL_ERROR);
             }
 
             if ($model->save()) {
@@ -178,7 +184,7 @@ class AdvertController extends Controller
         }
 
         $this->render('create', [
-            'model'=>$model,
+            'model' => $model,
         ]);
     }
 
@@ -212,7 +218,7 @@ class AdvertController extends Controller
             $model->categorys = isset($_POST['Advert']['categoryList']) ? $_POST['Advert']['categoryList'] : [];
 
             // Fetch updated country, region, and city data
-            $countryData = Geo::getCountryData($model->country_name);
+            $countryData = Geo::getCountryData('United Kingdom');
             if ($countryData) {
                 $model->country_id = $countryData['country_id'];
                 $model->country_name = $countryData['country_name'];
@@ -407,24 +413,38 @@ class AdvertController extends Controller
     {
         $type = Yii::app()->request->getQuery('type');
         $query = Yii::app()->request->getQuery('query');
-        $apiKey = Yii::app()->params['locationiq.api_key'];
+        $apiKey = Yii::app()->params['mapbox.api_key'];
 
         $url = sprintf(
-            'https://us1.locationiq.com/v1/search.php?key=%s&q=%s&format=json&limit=5',
-            $apiKey,
-            urlencode($query)
+            'https://api.mapbox.com/geocoding/v5/mapbox.places/%s.json?access_token=%s&limit=5',
+            urlencode($query),
+            $apiKey
         );
 
         $response = file_get_contents($url);
         if ($response === false) {
-            Yii::log("Failed to fetch suggestions from LocationIQ.", CLogger::LEVEL_ERROR);
+            Yii::log("Failed to fetch suggestions from Mapbox.", CLogger::LEVEL_ERROR);
             echo json_encode([]);
             return;
         }
 
         $json = CJSON::decode($response);
-        echo json_encode($json);
+
+        $suggestions = [];
+        if (isset($json['features']) && is_array($json['features'])) {
+            foreach ($json['features'] as $feature) {
+                $suggestions[] = [
+                    'place_id' => $feature['id'],
+                    'place_name' => $feature['place_name'],
+                    'center' => $feature['center'],
+                    'context' => $feature['context'] ?? []
+                ];
+            }
+        }
+
+        echo json_encode($suggestions);
     }
+
 
     /**
      * Payment processing with PayPal using Opay.
@@ -441,6 +461,31 @@ class AdvertController extends Controller
             Yii::log('Payment error: ' . $e->getMessage(), CLogger::LEVEL_ERROR);
             throw new CHttpException(500, 'Payment failed: ' . $e->getMessage());
         }
+    }
+
+    public function actionGetCountryId($name)
+    {
+        $country = Yii::app()->db->createCommand()
+            ->select('id')
+            ->from('country')
+            ->where('name=:name', [':name' => $name])
+            ->queryRow();
+
+        echo CJSON::encode(['id' => $country['id'] ?? null]);
+    }
+
+    public function actionGetRegionId($name, $countryId)
+    {
+        $region = Yii::app()->db->createCommand()
+            ->select('id')
+            ->from('region')
+            ->where('name=:name AND country_id=:countryId', [
+                ':name' => $name,
+                ':countryId' => $countryId,
+            ])
+            ->queryRow();
+
+        echo CJSON::encode(['id' => $region['id'] ?? null]);
     }
 
 }

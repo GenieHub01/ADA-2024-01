@@ -53,11 +53,18 @@ $this->pageTitle = 'Register';
 
     echo CHtml::submitButton('Register', ['class' => 'register-submit']);
 
-    $this->widget('LoginSocial');
-
-    $this->endWidget();
-
+    $googleAuthUrl = Yii::app()->createAbsoluteUrl('site/login', ['provider' => 'Google']);
     ?>
+
+    <br>
+    <div>
+    <a href="<?php echo htmlspecialchars($googleAuthUrl, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-danger">
+        <i class="fa fa-google"></i> Login with Google
+    </a>
+</div>
+
+<?php $this->endWidget(); ?>
+
 </div>
 
 <?php endif; ?>
