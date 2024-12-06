@@ -47,12 +47,12 @@ $config = array(
             'name' => 'reCaptcha',
             'class' => 'ReCaptcha',
             //production
-            // 'key' => '6LdFSwkUAAAAAPQT8GbLgD-WVLJfwVM3waTpm-RK',
-            // 'secret' => '6LdFSwkUAAAAACeDBuUKYABvVNSKE8IpnRhETlUG',
+            //  'key' => '6LcKLIcqAAAAAMXJTxp5J8fpcN3k5ZVRnsMeICYi',
+            //  'secret' => '6LcKLIcqAAAAACyPgpBgKkkIB7MHZxC1XYkcqJGh',
 
             //local
-            'key' => '6LeucloqAAAAAJcjaJZNPBWpE2sAtbIkHtw8KKBy',
-            'secret' => '6LeucloqAAAAAO2YaqrAalSHhAnIr_VCHKJEPDXV',
+             'key' => '6LeucloqAAAAAJcjaJZNPBWpE2sAtbIkHtw8KKBy',
+             'secret' => '6LeucloqAAAAAO2YaqrAalSHhAnIr_VCHKJEPDXV',
 
             //ads
 //            'key' => '6Lf-nAcUAAAAAD93JxV66VURXPq0qFD4N3K6ceMm',
@@ -107,14 +107,14 @@ $config = array(
             'allowAutoLogin'=>true,
             'class' => 'WebUser'
         ),
-        'urlManager'=>array(
-            'urlFormat'=>'path',
-            'showScriptName'=>false,
-            'rules'=>CMap::mergeArray(
-                require __DIR__.'/routes.php',
-                require __DIR__.'/../vendor/starship/restfullyii/starship/RestfullYii/config/routes.php',
-            ),
-        ),
+        'urlManager' => array(
+		    'urlFormat' => 'path',
+		    'showScriptName' => false,
+		    'rules' => CMap::mergeArray(
+		        require(__DIR__ . '/routes.php'),
+		        require(__DIR__ . '/../vendor/starship/restfullyii/starship/RestfullYii/config/routes.php')
+		    ),
+		),
         'errorHandler'=>array(
             'errorAction'=>'site/error',
         ),
@@ -123,7 +123,7 @@ $config = array(
             'routes'=>array(
                 array(
                     'class'=>'CFileLogRoute',
-                    'levels'=>'error, warning',
+                    'levels'=>'error, warning, info',
                     'except' => 'exception.CHttpException.404',
                 ),
             ),

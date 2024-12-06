@@ -1,1 +1,1 @@
-<?= CHtml::link('', ['site/login', 'provider'=>'facebook'], ['class' => 'login-facebook']) ?>
+<?= CHtml::link('', ['site/login', 'provider'=>'google'], ['class' => 'login-google']) ?>

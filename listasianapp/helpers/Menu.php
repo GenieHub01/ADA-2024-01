@@ -6,8 +6,8 @@ class Menu
     {
 
         $menu = [
-            ['label' => 'Home', 'url' => 'http://www.asiandirectoryapp.com/'],
-            ['label' => 'Directory', 'url' => 'https://list.asiandirectoryapp.com'],
+            ['label' => 'Home', 'url' => 'https://www.mailzion.com/#category-anchor'],
+            ['label' => 'Directory', 'url' => 'https://www.mailzion.com/#category-anchor'],
             ['label' => 'Register', 'url' => ['site/register'], 'visible' => Yii::app()->user->isGuest],
             ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::app()->user->isGuest]
         ];

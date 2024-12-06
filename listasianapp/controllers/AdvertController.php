@@ -25,7 +25,6 @@ class AdvertController extends Controller
 
     /**
      * Specifies the access control rules.
-     * This method is used by the 'accessControl' filter.
      * @return array access control rules
      */
     public function accessRules()
@@ -46,7 +45,7 @@ class AdvertController extends Controller
                 'roles' => [User::ROLE_ADMIN],
             ],
             [
-                'deny',  // deny all users
+                'deny',
                 'users' => ['*'],
             ],
         ];
@@ -71,7 +70,7 @@ class AdvertController extends Controller
     }
 
     /**
-     * Display frontend advert
+     * Display frontend advert.
      */
     public function actionDisplay($id)
     {
@@ -106,7 +105,6 @@ class AdvertController extends Controller
 
         //preview advert
         if (Yii::app()->request->isAjaxRequest) {
-
             $model->attributes = $_POST['Advert'];
             $model->file = CUploadedFile::getInstance($model, 'file');
 
@@ -131,48 +129,38 @@ class AdvertController extends Controller
                 'html'=>$html
             ]);
             Yii::app()->end();
-
         }
 
         if (isset($_POST['Advert'])) {
-            Yii::log('POST data: ' . print_r($_POST['Advert'], true), CLogger::LEVEL_INFO);
-
+            // Yii::log('POST data: ' . print_r($_POST['Advert'], true), CLogger::LEVEL_INFO);
             $model->attributes = $_POST['Advert'];
             $model->file = CUploadedFile::getInstance($model, 'file');
+			$model->active = isset($model->active) ? $model->active : 0;
 
             // Set categoryList
             $model->categorys = isset($_POST['Advert']['categoryList']) && is_array($_POST['Advert']['categoryList'])
                 ? $_POST['Advert']['categoryList']
                 : [];
-
-            // Fetch country, region, and city data using Geo
-            $countryData = Geo::getCountryData('United Kingdom');
-            if ($countryData) {
-                $model->country_id = $countryData['country_id'];
-                $model->country_name = $countryData['country_name'];
-            } else {
-                Yii::log("Failed to fetch country data for United Kingdom", CLogger::LEVEL_ERROR);
-            }
-
-            $regionData = Geo::getRegionData($model->region, $model->country_id);
-            if ($regionData) {
-                $model->region_id = $regionData['region_id'];
-                $model->region = $regionData['region_code'];
-            } else {
-                Yii::log("Failed to fetch region data for {$model->region}", CLogger::LEVEL_ERROR);
-            }
-
-            $cityData = Geo::getCityData($model->city_name, $model->country_id, $model->region_id);
-            if ($cityData) {
-                $model->city_id = $cityData['city_id'];
-                $model->city_name = $cityData['city_name'];
-            } else {
-                Yii::log("Failed to fetch city data for {$model->city_name}", CLogger::LEVEL_ERROR);
-            }
-
-            if ($model->save()) {
-                Yii::log('Save successful: Advert ID ' . $model->id, CLogger::LEVEL_INFO);
             
+            // Fetch country, region, and city data using Geo
+            $this->populateGeoData($model);
+
+            // Debugging log
+            // Yii::log("Final Geo Data - Country ID: {$model->country_id}, Region ID: {$model->region_id}, City ID: {$model->city_id}, City Name: {$model->city_name}", CLogger::LEVEL_INFO);
+
+            if (empty($model->region_id) || empty($model->city_id)) {
+                $model->addError('region', 'Please select a valid region.');
+                $model->addError('city_name', 'Please select a valid city.');
+            }
+            
+            // Save model
+            if ($model->save()) {
+                // Yii::log('Save successful: Advert ID ' . $model->id, CLogger::LEVEL_INFO);
+            
+                // Reload dropdown lists to ensure consistency
+                $model->regionList = $model->getRegionList();
+                $model->cityList = $model->getCityList();
+
                 if (!YII_DEBUG) {
                     Mail::prepare('create', $model->id, $model->user_id);
                 }
@@ -183,9 +171,12 @@ class AdvertController extends Controller
             }
         }
 
-        $this->render('create', [
-            'model' => $model,
-        ]);
+        // Populate dropdown lists for the form
+        $model->countryList = $model->getCountryList();
+        $model->regionList = !empty($model->country_id) ? $model->getRegionList() : [];
+        $model->cityList = !empty($model->region_id) ? $model->getCityList() : [];
+
+        $this->render('create', ['model' => $model]);
     }
 
     /**
@@ -196,11 +187,11 @@ class AdvertController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model=$this->loadModel($id);
+        $model = $this->loadModel($id);
 
         $active = $model->active;
 
-        if (!Yii::app()->user->checkAccess('updateAdvert', ['advert'=>$model])) {
+        if (!Yii::app()->user->checkAccess('updateAdvert', ['advert' => $model])) {
             throw new CHttpException(403, 'Access denied');
         }
 
@@ -211,42 +202,85 @@ class AdvertController extends Controller
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
 
-        if(isset($_POST['Advert']))
-        {
-            $model->attributes=$_POST['Advert'];
+        if (isset($_POST['Advert'])) {
+            // Yii::log('POST data: ' . print_r($_POST['Advert'], true), CLogger::LEVEL_INFO);
+            $model->attributes = $_POST['Advert'];
             $model->file = CUploadedFile::getInstance($model, 'file');
+            
+            // Set categoryList
             $model->categorys = isset($_POST['Advert']['categoryList']) ? $_POST['Advert']['categoryList'] : [];
 
-            // Fetch updated country, region, and city data
-            $countryData = Geo::getCountryData('United Kingdom');
-            if ($countryData) {
-                $model->country_id = $countryData['country_id'];
-                $model->country_name = $countryData['country_name'];
-            }
+            // Fetch geo data
+            $this->populateGeoData($model);
 
-            $regionData = Geo::getRegionData($model->region, $model->country_id);
-            if ($regionData) {
-                $model->region_id = $regionData['region_id'];
-                $model->region = $regionData['region_code'];
-            }
+            // Log final data
+            // Yii::log("Final Geo Data - Country ID: {$model->country_id}, Region ID: {$model->region_id}, Region Name: {$model->region}, City ID: {$model->city_id}", CLogger::LEVEL_INFO);
 
-            $cityData = Geo::getCityData($model->city_name, $model->country_id, $model->region_id);
-            if ($cityData) {
-                $model->city_id = $cityData['city_id'];
-                $model->city_name = $cityData['city_name'];
+            if (empty($model->region_id) || empty($model->city_id)) {
+                $model->addError('region', 'Please select a valid region.');
+                $model->addError('city_name', 'Please select a valid city.');
             }
-
+            
+            // Save the model
             if ($model->save()) {
+                // Yii::log('Save successful: Advert ID ' . $model->id, CLogger::LEVEL_INFO);
+
+                // Reload dropdown lists to ensure consistency
+                $model->regionList = $model->getRegionList();
+                $model->cityList = $model->getCityList();
+
                 if (!YII_DEBUG && Yii::app()->user->checkAccess(User::ROLE_ADMIN) && !$active && $model->active) {
                     Mail::prepare('live', $model->id, $model->user_id);
                 }
+
                 $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                Yii::log("Save failed: " . print_r($model->getErrors(), true), CLogger::LEVEL_ERROR);
             }
         }
 
-        $this->render('update',array(
-            'model'=>$model,
-        ));
+        // Populate dropdown values for update form
+        $model->countryList = $model->getCountryList();
+        $model->regionList = !empty($model->country_id) ? $model->getRegionList() : [];
+        $model->cityList = !empty($model->region_id) ? $model->getCityList() : [];
+
+        $this->render('update', ['model' => $model]);
+    }
+
+    private function populateGeoData(&$model)
+    {
+        // Fetch country data
+        if (!empty($model->country_name)) {
+            $countryData = Geo::getCountryData($model->country_name);
+            if ($countryData) {
+                $model->country_id = $countryData['country_id'];
+                $model->country_name = $countryData['country_name'];
+                // Yii::log("Fetched Country ID: {$model->country_id}", CLogger::LEVEL_INFO);
+            } else {
+                Yii::log("Invalid country_name: {$model->country_name}", CLogger::LEVEL_ERROR);
+            }
+        }
+
+        // Fetch region data
+        if (!empty($model->region_id) && !empty($model->country_id)) {
+            $regionData = Geo::getRegionData($model->region_id, $model->country_id);
+            if ($regionData && isset($regionData['region_name'])) {
+                $model->region = $regionData['region_name'];
+                // Yii::log("Fetched Region Name: {$model->region} for Region ID: {$model->region_id}", CLogger::LEVEL_INFO);
+            } else {
+                Yii::log("Invalid region_id: {$model->region_id} for Country ID: {$model->country_id}", CLogger::LEVEL_WARNING);
+            }
+        }
+
+        // Fetch city data
+        if (!empty($model->city_id)) {
+            $cityData = Geo::getCityData($model->city_id, $model->region_id);
+            if ($cityData) {
+                $model->city_name = $cityData['city_name'];
+            } else {
+                Yii::log("Invalid city_id: {$model->city_id} for Region ID: {$model->region_id}", CLogger::LEVEL_WARNING);
+            }
+        }
     }
 
     /**
@@ -437,14 +471,13 @@ class AdvertController extends Controller
                     'place_id' => $feature['id'],
                     'place_name' => $feature['place_name'],
                     'center' => $feature['center'],
-                    'context' => $feature['context'] ?? []
+                    'context' => isset($feature['context']) ? $feature['context'] : []
                 ];
             }
         }
 
         echo json_encode($suggestions);
     }
-
 
     /**
      * Payment processing with PayPal using Opay.
@@ -465,27 +498,47 @@ class AdvertController extends Controller
 
     public function actionGetCountryId($name)
     {
+        $countryName = Yii::app()->request->getQuery('name');
+
+        // Yii::log('Fetching country ID for: ' . $countryName, CLogger::LEVEL_INFO);
+
+        if (!$countryName) {
+            Yii::log('Country name is missing.', CLogger::LEVEL_ERROR);
+            echo CJSON::encode(['id' => null, 'error' => 'Country name is required']);
+            Yii::app()->end();
+        }
+
         $country = Yii::app()->db->createCommand()
-            ->select('id')
+            ->select('iso AS id')
             ->from('country')
-            ->where('name=:name', [':name' => $name])
+            ->where('country=:name', [':name' => $name])
             ->queryRow();
 
-        echo CJSON::encode(['id' => $country['id'] ?? null]);
+        if ($country) {
+            // Yii::log('Found country ID: ' . $country['id'], CLogger::LEVEL_INFO);
+            echo CJSON::encode(['id' => $country['id']]);
+        } else {
+            Yii::log('Country not found for: ' . $countryName, CLogger::LEVEL_WARNING);
+            echo CJSON::encode(['id' => null, 'error' => 'Country not found']);
+        }
     }
 
     public function actionGetRegionId($name, $countryId)
     {
         $region = Yii::app()->db->createCommand()
-            ->select('id')
+            ->select('admin_code AS id')
             ->from('region')
-            ->where('name=:name AND country_id=:countryId', [
+            ->where('name=:name AND country_iso=:countryId', [
                 ':name' => $name,
                 ':countryId' => $countryId,
             ])
             ->queryRow();
 
-        echo CJSON::encode(['id' => $region['id'] ?? null]);
+        echo CJSON::encode(['id' => isset($region['id']) ? $region['id'] : null]);
     }
 
+    private function getValueFromPost($field, $defaultValue)
+    {
+        return isset($_POST['Advert'][$field]) ? $_POST['Advert'][$field] : $defaultValue;
+    }
 }

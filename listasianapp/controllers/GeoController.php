@@ -2,7 +2,7 @@
 
 class GeoController extends Controller
 {
-    public function filters()
+	public function filters()
     {
         return [
             [
@@ -16,60 +16,40 @@ class GeoController extends Controller
 
     public function actionCountries()
     {
-        $data = Geo::getCountryData();
+        $countries = Geo::getCountryData();
 
-        echo CHtml::tag('option', ['value' => ''], 'Select country', true);
+        $options = CHtml::tag('option', ['value' => ''], 'Select country', true);
 
-        if ($data !== null) {
-            echo CHtml::tag('option', [
-                'value' => $data['country_id']
-            ], CHtml::encode($data['country_name']), true);
+        foreach ($countries as $country) {
+            if (isset($country['country_id'], $country['country_name'], $country['country'])) {
+                $options .= CHtml::tag('option', [
+                    'value' => $country['country_id'],
+                    'data-country-code' => $country['country'],
+                ], CHtml::encode($country['country_name']), true);
+            }
         }
+
+        echo $options;
     }
 
     public function actionRegions()
     {
-        $countryId = Yii::app()->request->getQuery('countryId');
+        $countryIso = Yii::app()->request->getQuery('countryIso');
 
-        if (!$countryId) {
-            Yii::log('Missing countryId parameter', CLogger::LEVEL_ERROR);
-            echo CJSON::encode(['error' => 'Missing countryId parameter']);
+        if (!$countryIso) {
+            Yii::log('Missing countryIso parameter', CLogger::LEVEL_ERROR);
+            echo CJSON::encode(['error' => 'Missing countryIso parameter']);
             Yii::app()->end();
         }
 
-        Yii::log("Received countryId: {$countryId}", CLogger::LEVEL_INFO);
-        
-        $username = Yii::app()->params['geonames.username'];
-        $url = "http://api.geonames.org/childrenJSON?geonameId={$countryId}&username={$username}";
+        // Yii::log("Received countryIso: {$countryIso}", CLogger::LEVEL_INFO);
 
-        Yii::log("Fetching regions from URL: {$url}", CLogger::LEVEL_INFO);
-
-        $response = @file_get_contents($url);
-        if ($response === false) {
-            Yii::log("Failed to fetch regions for countryId {$countryId}", CLogger::LEVEL_ERROR);
-            echo CJSON::encode(['error' => 'Failed to fetch regions']);
-            return;
-        }
-
-        $data = json_decode($response, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            Yii::log("Invalid JSON response: " . $response, CLogger::LEVEL_ERROR);
-            echo CJSON::encode(['error' => 'Invalid JSON response from GeoNames API']);
-            return;
-        }
-
-        $regions = [];
-        if (isset($data['geonames']) && is_array($data['geonames'])) {
-            foreach ($data['geonames'] as $region) {
-                $regions[] = [
-                    'id' => $region['geonameId'],
-                    'name' => $region['name'],
-                ];
-            }
-        }
+        $regions = Geo::getRegionData(null, $countryIso);
 
         if (empty($regions)) {
-            Yii::log("No regions found for countryId {$countryId}", CLogger::LEVEL_WARNING);
+            Yii::log("No regions found for countryIso {$countryIso}", CLogger::LEVEL_WARNING);
+            echo CJSON::encode(['error' => 'No regions found']);
+            return;
         }
 
         echo CJSON::encode($regions);
@@ -85,40 +65,31 @@ class GeoController extends Controller
             Yii::app()->end();
         }
 
-        Yii::log("Received regionId: {$regionId}", CLogger::LEVEL_INFO);
+        // Yii::log("Received regionId: {$regionId}", CLogger::LEVEL_INFO);
 
-        $username = Yii::app()->params['geonames.username'];
-        $url = "http://api.geonames.org/childrenJSON?geonameId={$regionId}&username={$username}";
+        try {
+            $cities = Geo::getCityData(null, $regionId);
 
-        $response = @file_get_contents($url);
-        if ($response === false) {
-            Yii::log("Failed to fetch cities for regionId {$regionId}", CLogger::LEVEL_ERROR);
-            echo CJSON::encode(['error' => 'Failed to fetch cities']);
-            return;
-        }
+            if (empty($cities)) {
+                Yii::log("No cities found for regionId {$regionId}", CLogger::LEVEL_WARNING);
+                echo CJSON::encode(['error' => 'No cities found']);
+                Yii::app()->end();
+            }
 
-        $data = json_decode($response, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            Yii::log("Invalid JSON response: " . $response, CLogger::LEVEL_ERROR);
-            echo CJSON::encode(['error' => 'Invalid JSON response from GeoNames API']);
-            return;
-        }
-
-        $cities = [];
-        if (isset($data['geonames']) && is_array($data['geonames'])) {
-            foreach ($data['geonames'] as $city) {
-                $cities[] = [
-                    'id' => $city['geonameId'],
-                    'name' => $city['name'],
+            $formattedCities = [];
+            foreach ($cities as $city) {
+                $formattedCities[] = [
+                    'city_id' => $city['city_id'],
+                    'city_name' => $city['city_name'],
                 ];
             }
-        }
 
-        if (empty($cities)) {
-            Yii::log("No cities found for regionId {$regionId}", CLogger::LEVEL_WARNING);
+            // Yii::log("Cities fetched successfully: " . json_encode($formattedCities), CLogger::LEVEL_INFO);
+            echo CJSON::encode($formattedCities);
+        } catch (Exception $e) {
+            Yii::log("Error fetching cities for regionId {$regionId}: " . $e->getMessage(), CLogger::LEVEL_ERROR);
+            echo CJSON::encode(['error' => 'Failed to fetch cities']);
         }
-
-        echo CJSON::encode($cities);
     }
 
     /**
@@ -133,36 +104,81 @@ class GeoController extends Controller
             return;
         }
 
-        if (strtolower($countryName) === 'united kingdom') {
-            echo json_encode(['code' => 'GB']); // ISO Code for UK
-            return;
-        }
+        $command = Yii::app()->db->createCommand("SELECT fips AS code FROM country WHERE LOWER(country) = :name");
+        $command->bindParam(":name", strtolower($countryName), PDO::PARAM_STR);
 
-        $command = Yii::app()->db->createCommand("SELECT code FROM country WHERE name = :name");
-        $command->bindParam(":name", $countryName, PDO::PARAM_STR);
         $countryCode = $command->queryScalar();
 
         if ($countryCode !== false) {
-            echo json_encode(['code' => $countryCode]);
-            return;
-        }
-
-        $username = Yii::app()->params['geonames.username'];
-        $url = "http://api.geonames.org/searchJSON?name_equals=" . urlencode($countryName) . "&featureClass=A&maxRows=1&username={$username}";
-
-        $response = @file_get_contents($url);
-        if ($response === false) {
-            Yii::log("Failed to fetch country code from GeoNames for country_name {$countryName}", CLogger::LEVEL_ERROR);
-            echo json_encode(['code' => '']);
-            return;
-        }
-
-        $data = json_decode($response, true);
-        if (isset($data['geonames'][0]['countryCode'])) {
-            echo json_encode(['code' => $data['geonames'][0]['countryCode']]);
+            echo json_encode(['code' => $countryCode]); // Return FIPS code
         } else {
             Yii::log("Country code not found for {$countryName}", CLogger::LEVEL_WARNING);
             echo json_encode(['code' => '']);
+        }
+    }
+
+    public function actionGetCountryId()
+    {
+        $countryName = Yii::app()->request->getQuery('name');
+        // Yii::log("Received countryName: {$countryName}", CLogger::LEVEL_INFO);
+
+        if (!$countryName) {
+            echo CJSON::encode(['id' => null, 'error' => 'Country name is required']);
+            Yii::log('Country name is missing', CLogger::LEVEL_ERROR);
+            Yii::app()->end();
+        }
+
+        $country = Yii::app()->db->createCommand()
+            ->select('iso AS id, fips AS code')
+            ->from('country')
+            ->where('LOWER(country) = :name', [':name' => strtolower($countryName)]) // Case-insensitive comparison
+            ->queryRow();
+
+        if ($country) {
+            // Yii::log("Country found: {$country['id']} with FIPS code: {$country['code']}", CLogger::LEVEL_INFO);
+            echo CJSON::encode([
+                'id' => $country['id'], // ISO code
+                'code' => $country['code'], // FIPS code
+            ]);
+        } else {
+            Yii::log("Country not found: {$countryName}", CLogger::LEVEL_WARNING);
+            echo CJSON::encode(['id' => null, 'error' => 'Country not found']);
+        }
+    }
+
+    public function actionGetRegionId()
+    {
+        $regionId = Yii::app()->request->getQuery('regionId');
+        $countryIso = Yii::app()->request->getQuery('countryIso');
+
+        // Yii::log("Received regionId: {$regionId}, countryIso: {$countryIso}", CLogger::LEVEL_INFO);
+
+        if (!$regionId || !$countryIso) {
+            Yii::log('Missing regionId or countryIso parameter', CLogger::LEVEL_ERROR);
+            echo CJSON::encode(['error' => 'Missing regionId or countryIso parameter']);
+            Yii::app()->end();
+        }
+
+        try {
+            $region = Yii::app()->db->createCommand()
+                ->select('admin_code AS id')
+                ->from('region')
+                ->where('admin_code = :regionId AND country_iso = :countryIso', [
+                    ':regionId' => $regionId,
+                    ':countryIso' => $countryIso,
+                ])
+                ->queryRow();
+
+            if ($region) {
+                // Yii::log("Region found: {$region['id']}", CLogger::LEVEL_INFO);
+                echo CJSON::encode(['id' => $region['id']]);
+            } else {
+                Yii::log("Region not found for regionId {$regionId} and countryIso {$countryIso}", CLogger::LEVEL_WARNING);
+                echo CJSON::encode(['error' => 'Region not found']);
+            }
+        } catch (Exception $e) {
+            Yii::log("Error fetching region data: " . $e->getMessage(), CLogger::LEVEL_ERROR);
+            echo CJSON::encode(['error' => 'Internal server error']);
         }
     }
 
