@@ -26,50 +26,53 @@
         <div class="row">
             <div class="col-md-5">
                 <?php
-                    // Country Dropdown (Static)
-                    echo $form->dropDownListGroup($model, 'country', [
+                    echo $form->select2Group($model, 'country_name', [
                         'widgetOptions' => [
-                            'data' => ['United Kingdom' => 'United Kingdom'],
+                            'data' => CHtml::listData(Geo::getCountryData(), 'country_name', 'country_name'),
                             'htmlOptions' => [
-                                'id' => 'Advert_country',
-                                'disabled' => false,
+                                'id' => 'Advert_country_name',
+                                'prompt' => 'Select Country',
+                                'onchange' => 'setCountryId()',
                             ],
                         ],
                     ]);
-                
-                    // Region Dropdown
-                    echo $form->dropDownListGroup($model, 'region', [
+
+                    echo $form->select2Group($model, 'region_id', [
                         'widgetOptions' => [
-                            'data' => [],
+                            'data' => !empty($model->regionList) ? $model->regionList : [],
                             'htmlOptions' => [
                                 'id' => 'Advert_region',
                                 'prompt' => 'Select Region',
-                                'onchange' => 'setRegionId()', // Dynamically update region
+                                'onchange' => 'setRegionId()',
+                                'disabled' => true,
                             ],
                         ],
-                    ]);
-                
-                    // City Dropdown
-                    echo $form->dropDownListGroup($model, 'city_name', [
+                    ]);                                                            
+
+                    echo $form->select2Group($model, 'city_id', [
                         'widgetOptions' => [
-                            'data' => [],
+                            'data' => !empty($model->cityList) ? $model->cityList : [],
                             'htmlOptions' => [
-                                'id' => 'Advert_city_name',
+                                'id' => 'Advert_city_id',
                                 'prompt' => 'Select City',
+                                'onchange' => 'setCityId()',
+                                'disabled' => true,
                             ],
                         ],
-                    ]);
+                    ]);                    
 
                     echo $form->hiddenField($model, 'country_id', ['id' => 'Advert_country_id']);
 
-                    echo $form->hiddenField($model, 'region_id', ['id' => 'Advert_region_id']);
+                    echo $form->hiddenField($model, 'country', ['id' => 'Advert_country']);
 
-                    echo $form->hiddenField($model, 'city_id', ['id' => 'Advert_city_id']);
+                    echo $form->hiddenField($model, 'region_id', ['id' => 'Advert_region_id']);
+                
+                    echo $form->hiddenField($model, 'city_name', ['id' => 'Advert_city_name_hidden']);
                 ?>
                 
                 <div id="suggestions" style="display: none; border: 1px solid #ccc; max-height: 150px; overflow-y: auto;"></div>
 
-                <button class="btn btn-default geo-btn" id="bGeo" name="yt1" type="button">GEO</button>
+                <!-- <button class="btn btn-default geo-btn" id="bGeo" name="yt1" type="button">GEO</button> -->
 
                 <?php
                     echo $form->select2Group($model, 'category_id', [
@@ -241,62 +244,266 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        setCountryId();
-        fetchRegionsForUK();
+        const priorityCountries = ["United Kingdom", "United States", "Canada", "India"];
+        const countryDropdown = document.getElementById("Advert_country_name");
 
+        if (countryDropdown) {
+            prioritizeDropdownOptions(countryDropdown, priorityCountries);
+        }
+
+        document.getElementById("Advert_country_name").addEventListener("change", setCountryId);
         document.getElementById("Advert_region").addEventListener("change", setRegionId);
-        document.getElementById("Advert_city_name").addEventListener("change", setCityId);
+        document.getElementById("Advert_city_id").addEventListener("change", setCityId);
+        
+        console.log("Checking initial dropdown states...");
+        console.log("Country Dropdown:", document.getElementById("Advert_country_name").value);
+        console.log("Region Dropdown:", document.getElementById("Advert_region").value);
+        console.log("City Dropdown:", document.getElementById("Advert_city_id").value);
     });
 
     function setCountryId() {
-        const countryName = "United Kingdom";
-        const countryId = 2635167;
-        document.getElementById("Advert_country_id").value = countryId;
-        console.log("Country ID set to:", countryId);
+        const countryDropdown = document.getElementById("Advert_country_name");
+        const selectedCountryName = countryDropdown?.value;
+
+        const countryIdField = document.getElementById("Advert_country_id");
+        const countryCodeField = document.getElementById("Advert_country"); // Hidden field for FIPS
+
+        if (!countryIdField || !countryCodeField) {
+            console.error("Hidden input Advert_country_id or Advert_country is missing in the DOM.");
+            return;
+        }
+
+        if (!selectedCountryName) {
+            console.warn("No country selected.");
+            countryIdField.value = "";
+            countryCodeField.value = "";
+            resetDropdown("Advert_region", "Select Region");
+            resetDropdown("Advert_city_id", "Select City");
+            return;
+        }
+
+        console.log("Selected Country:", selectedCountryName);
+
+        fetch(`/geo/getCountryId?name=${encodeURIComponent(selectedCountryName)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch country ID: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.id && data.code) {
+                    countryIdField.value = data.id; // ISO code
+                    countryCodeField.value = data.code; // FIPS code
+                    console.log("Country ID set to:", data.id, "Country code set to:", data.code);
+                    fetchRegions(data.id);
+                } else {
+                    console.error("Country not found:", selectedCountryName);
+                    countryIdField.value = "";
+                    countryCodeField.value = "";
+                    resetDropdown("Advert_region", "Select Region");
+                    resetDropdown("Advert_city_id", "Select City");
+                }
+            })
+            .catch(error => console.error("Error fetching country ID:", error));
     }
 
     function setRegionId() {
         const regionDropdown = document.getElementById("Advert_region");
-        const selectedRegionName = regionDropdown.options[regionDropdown.selectedIndex]?.text || "";
-        const countryId = document.getElementById("Advert_country_id").value;
+        const selectedregionId = regionDropdown.value;
+        const countryIso = document.getElementById("Advert_country_id").value;
 
-        console.log("Selected Region:", selectedRegionName, "Country ID:", countryId);
+        if (!regionDropdown) {
+            console.error("Region dropdown (Advert_region) is missing in the DOM.");
+            return;
+        }
         
-        if (!selectedRegionName || !countryId) {
-            console.warn("Region or Country ID missing.");
+        if (!selectedregionId || !countryIso) {
+            console.warn("Region ID or Country ISO is missing.");
             document.getElementById("Advert_region_id").value = "";
+            resetDropdown("Advert_city_id", "Select City");
             return;
         }
 
-        fetch(`/geo/regions?countryId=${countryId}`)
-            .then(response => response.json())
+        console.log("Selected Region ID:", selectedregionId, "for Country ISO:", countryIso);
+
+        fetch(`/geo/getRegionId?regionId=${encodeURIComponent(selectedregionId)}&countryIso=${encodeURIComponent(countryIso)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch region ID: ${response.statusText}`);
+                }
+                return response.json();
+            })
             .then(data => {
-                if (data.length) {
-                    const selectedRegion = data.find(region => region.name === selectedRegionName);
-                    if (selectedRegion) {
-                        document.getElementById("Advert_region_id").value = selectedRegion.id;
-                        console.log("Region ID set to:", selectedRegion.id);
-                        fetchCities(selectedRegion.id);
-                    } else {
-                        console.error("Selected region not found:", selectedRegionName);
-                    }
+                if (data && data.id) {
+                    document.getElementById("Advert_region_id").value = data.id;
+                    console.log("Region ID set to:", data.id);
+                    fetchCities(data.id);
+                } else {
+                    console.warn("Region not found:", selectedregionId);
+                    document.getElementById("Advert_region_id").value = "";
+                    resetDropdown("Advert_city_id", "Select City");
                 }
             })
-            .catch(error => console.error("Error fetching regions:", error));
+            .catch(error => console.error("Error fetching region ID:", error));
     }
 
     function setCityId() {
-        const cityDropdown = document.getElementById("Advert_city_name");
-        const selectedCityId = cityDropdown.value;
-        document.getElementById("Advert_city_id").value = selectedCityId;
-        console.log("City ID set to:", selectedCityId);
+        const cityDropdown = document.getElementById("Advert_city_id");
+        if (!cityDropdown) {
+            console.error("City dropdown (Advert_city_id) is missing in the DOM.");
+            return;
+        }
+
+        const selectedCityId = cityDropdown?.value;
+        const selectedCityName = cityDropdown?.options[cityDropdown.selectedIndex]?.text;
+
+        const cityNameField = document.getElementById("Advert_city_name_hidden");
+
+        if (!cityNameField) {
+            console.error("Hidden input Advert_city_name_hidden is missing in the DOM.");
+            return;
+        }
+
+        if (!selectedCityId || !selectedCityName) {
+            console.warn("No city selected.");
+            cityNameField.value = ""; // Reset city_name
+            return;
+        }
+
+        console.log("Selected City Name:", selectedCityName);
+        console.log("Selected City ID:", selectedCityId);
+
+        // Set the hidden input
+        cityNameField.value = selectedCityName;
+    }
+
+    function fetchRegions(countryIso) {
+        const regionDropdown = document.getElementById("Advert_region");
+        const cityDropdown = document.getElementById("Advert_city_id");
+
+        if (!countryIso) {
+            console.warn("Country ISO is required to fetch regions.");
+            resetDropdown("Advert_region", "Select Region");
+            resetDropdown("Advert_city_id", "Select City");
+            return;
+        }
+
+        console.log("Fetching regions for Country ISO:", countryIso);
+
+        regionDropdown.disabled = true;
+        cityDropdown.disabled = true;
+
+        fetch(`/geo/regions?countryIso=${encodeURIComponent(countryIso)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch regions: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                resetDropdown("Advert_region", "Select Region");
+
+                if (data?.length > 0) {
+                    data.forEach(region => {
+                        if (region.region_id && region.region_name) {
+                            const option = document.createElement("option");
+                            option.value = region.region_id;
+                            option.textContent = region.region_name;
+                            regionDropdown.appendChild(option);
+                        }
+                    });
+                    console.log("Regions loaded successfully.");
+                    regionDropdown.disabled = false;
+                } else {
+                    console.warn("No regions found for Country ISO:", countryIso);
+                }
+
+                resetDropdown("Advert_city_id", "Select City");
+            })
+            .catch(error => {
+                console.error("Error fetching regions:", error);
+                regionDropdown.disabled = false;
+            });
+    }
+
+    function fetchCities(regionId) {
+        const cityDropdown = document.getElementById("Advert_city_id");
+
+        if (!regionId || cityDropdown.options.length > 1) {
+            console.log("Cities already populated or invalid Region ID.");
+            console.warn("Region ID is required to fetch cities.");
+            resetDropdown("Advert_city_id", "Select City");
+            return;
+        }
+
+        console.log("Fetching cities for Region ID:", regionId);
+
+        cityDropdown.disabled = true;
+
+        fetch(`/geo/cities?regionId=${encodeURIComponent(regionId)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch cities: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                resetDropdown("Advert_city_id", "Select City");
+
+                if (Array.isArray(data) && data.length > 0) {
+                    data.forEach(city => {
+                        if (city.city_id && city.city_name) {
+                            const option = document.createElement("option");
+                            option.value = city.city_id; // Set city_id as value
+                            option.textContent = city.city_name; // Set city_name as displayed text
+                            cityDropdown.appendChild(option);
+                        }
+                    });
+                    console.log("Cities loaded successfully.");
+                    cityDropdown.disabled = false;
+                } else {
+                    console.warn("No cities found for Region ID:", regionId);
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching cities:", error);
+                cityDropdown.disabled = false; // Enable city dropdown on error
+            });
+    }
+
+    /**
+     * Prioritize specific options in a dropdown.
+     * @param {HTMLSelectElement} dropdown - The dropdown element.
+     * @param {Array} priorities - Array of country names to prioritize.
+     */
+    function prioritizeDropdownOptions(dropdown, priorities) {
+        const options = Array.from(dropdown.options); // Convert to array
+        const prioritized = [];
+        const others = [];
+
+        // Separate options into prioritized and others
+        options.forEach((option) => {
+            if (priorities.includes(option.text)) {
+                prioritized.push(option);
+            } else {
+                others.push(option);
+            }
+        });
+
+        // Clear dropdown and re-append options
+        dropdown.innerHTML = ""; // Remove all options
+        prioritized.forEach((opt) => dropdown.appendChild(opt)); // Append prioritized options
+        others.forEach((opt) => dropdown.appendChild(opt)); // Append other options
+
+        console.log("Dropdown reordered with priorities:", priorities);
     }
 
     function fetchCoordinates() {
         const addressInput = document.getElementById("Advert_address");
-        const cityInput = document.getElementById("Advert_city_name");
+        const cityInput = document.getElementById("Advert_city_id");
         const regionInput = document.getElementById("Advert_region");
-        const countryInput = document.getElementById("Advert_country");
+        const countryInput = document.getElementById("Advert_country_name");
 
         if (!addressInput || !cityInput || !regionInput || !countryInput) {
             console.error("One or more required elements (address, city, region, country) are missing.");
@@ -306,7 +513,7 @@
         const address = addressInput.value || "";
         const city = cityInput.options[cityInput.selectedIndex]?.text || "";
         const region = regionInput.options[regionInput.selectedIndex]?.text || "";
-        const country = countryInput.options[countryInput.selectedIndex]?.text || "United Kingdom";
+        const country = countryInput.options[countryInput.selectedIndex]?.text || "";
 
         if (!address || !country) {
             console.error("Address and country are required for geocoding.");
@@ -316,7 +523,7 @@
         const fullAddress = `${address}, ${city}, ${region}, ${country}`;
         console.log("Full address:", fullAddress);
 
-        const apiKey = "pk.eyJ1IjoiZGV0YWhlcm1hbmEiLCJhIjoiY20zd3dkMXlzMTltZjJxcTJwajU3bnp2dSJ9.-7A9JGwRklO5A8HZPsSULA";
+        const apiKey = "<?= Yii::app()->params['mapbox.api_key']; ?>";
 
         const apiUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(fullAddress)}.json?access_token=${apiKey}&limit=1`;
 
@@ -347,63 +554,20 @@
             .catch(error => console.error("Error fetching coordinates:", error));
     }
 
-    function fetchRegionsForUK() {
-        const countryId = document.getElementById("Advert_country_id").value;
-        console.log("Fetching regions for countryId:", countryId); // Debug log
-
-        fetch(`/geo/regions?countryId=${countryId}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log("Regions fetched:", data); // Debug log
-                const regionDropdown = document.getElementById("Advert_region");
-                regionDropdown.innerHTML = '<option value="">Select Region</option>';
-                data.forEach(region => {
-                    const option = document.createElement("option");
-                    option.value = region.id;
-                    option.textContent = region.name;
-                    regionDropdown.appendChild(option);
-                });
-            })
-            .catch(error => console.error("Error fetching regions:", error));
-    }
-
-    function fetchCities(regionId) {
-        if (!regionId) {
-            console.error("Region ID is required to fetch cities.");
+    function resetDropdown(elementId, placeholder) {
+        const dropdown = document.getElementById(elementId);
+        if (!dropdown) {
+            console.error(`Dropdown with ID ${elementId} not found.`);
             return;
         }
 
-        const username = "detahermana";
-        const url = `http://api.geonames.org/childrenJSON?geonameId=${regionId}&username=${username}`;
-
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                const cityDropdown = document.getElementById("Advert_city_name");
-                cityDropdown.innerHTML = '<option value="">Select City</option>';
-
-                if (data && data.geonames && data.geonames.length > 0) {
-                    data.geonames.forEach(city => {
-                        const option = document.createElement("option");
-                        option.value = city.geonameId;
-                        option.textContent = city.name;
-                        cityDropdown.appendChild(option);
-                    });
-                } else {
-                    console.warn("No cities found for the selected region.");
-                    cityDropdown.innerHTML = '<option value="">No cities available</option>';
-                }
-            })
-            .catch(error => {
-                console.error("Error fetching cities:", error);
-                const cityDropdown = document.getElementById("Advert_city_name");
-                cityDropdown.innerHTML = '<option value="">Error fetching cities</option>';
-            });
+        dropdown.innerHTML = "";
+        const placeholderOption = document.createElement("option");
+        placeholderOption.value = "";
+        placeholderOption.textContent = placeholder;
+        dropdown.appendChild(placeholderOption);
+        dropdown.disabled = true;
+        console.log(`Dropdown ${elementId} reset with placeholder: ${placeholder}`);
     }
 
     $(function () {

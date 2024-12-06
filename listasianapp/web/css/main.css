@@ -215,8 +215,8 @@ label.exp-year select, label.exp-month select {padding-right:20px;}
 .form-theme input.login-submit:hover, .form-theme input.register-submit:hover {opacity:1;}
 .login-forgot {margin-top:10px;color: #464646; display:block; width:188px; text-align: center;}
 .login-forgot:hover {color: #464646; text-decoration: underline; }
-.login-facebook {background:url(/images/ADA_back_button_facebook_login.png) 0; width:186px; margin:25px 0 0; height:40px; display:block; border:0; outline:none; opacity:.9;}
-.login-facebook:hover {opacity:1;}
+.login-google {background:url(/images/ADA_back_button_google_login.png) 0; width:186px; margin:25px 0 0; height:40px; display:block; border:0; outline:none; opacity:.9;}
+.login-google:hover {opacity:1;}
 
 .add-company {margin:20px 0;}
 .location-form {margin:20px 0 20px;}

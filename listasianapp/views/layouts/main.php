@@ -41,7 +41,7 @@
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content="Download the Best Asian Directory in a Mobile App" />
 	<meta property="og:description" content="Find great restaurants, nightclubs, wedding suppliers, textile shops, food markets, anything with an Asian flavour, and locate them quickly, all from your smartphone, tablet or PC. This is Britain&#039;s premier app for accessing Asian businesses. There are 2.5 million British Asians – a thriving market for goods and services. It is fantastic for planning your Asian Events, such as weddings, parties, or other social functions. The app has many categories to browse through, including Hair &amp; Beauty, MUA, DJs, Venues, Solicitors, Estate Agents, Driving Schools and a whole host of other useful services." />
-	<meta property="og:url" content="https://list.asiandirectoryapp.com/" />
+	<meta property="og:url" content="https://www.mailzion.com/" />
 	<meta property="og:site_name" content="Asian Directory App" />
 	<meta property="og:image" content="https://www.asiandirectoryapp.com/wp-content/uploads/2017/04/ADA-FB-Share_Pic-1.jpg" />
 	<meta name="twitter:card" content="summary" />
@@ -126,12 +126,12 @@
 							<div class="header-bottom-menu-row-mobile">
 								<ul>
 									<li><a href="#">Top Categories</a></li>
-									<li><a href="https://list.asiandirectoryapp.com/c/AAAA001003">What's On</a></li>
-									<li><a href="https://list.asiandirectoryapp.com/c/ABAA000907">All-Round Builders</a></li>
-									<li><a href="https://list.asiandirectoryapp.com/c/ABAA001003">Wedding Venues</a></li>
-									<li><a href="https://list.asiandirectoryapp.com/c/ABAA001022">Asian Jewellery</a></li>
-									<li><a href="https://list.asiandirectoryapp.com/c/ABAA000305">Asian DJ</a></li>
-									<li><a href="https://list.asiandirectoryapp.com/c/ABAA000406">Asian Restaurants</a></li>
+									<li><a href="https://www.mailzion.com/c/AAAA001003">What's On</a></li>
+									<li><a href="https://www.mailzion.com/c/ABAA000907">All-Round Builders</a></li>
+									<li><a href="https://www.mailzion.com/c/ABAA001003">Wedding Venues</a></li>
+									<li><a href="https://www.mailzion.com/c/ABAA001022">Asian Jewellery</a></li>
+									<li><a href="https://www.mailzion.com/c/ABAA000305">Asian DJ</a></li>
+									<li><a href="https://www.mailzion.com/c/ABAA000406">Asian Restaurants</a></li>
 								</ul>
 							</div>
 						</div>
@@ -154,12 +154,12 @@
         				<div class="header-bottom-menu-row">
         					<ul>
         						<li><a href="#">Top Categories</a></li>
-        						<li><a href="https://list.asiandirectoryapp.com/c/AAAA001003">What's On</a></li>
-        						<li><a href="https://list.asiandirectoryapp.com/c/ABAA000907">All-Round Builders</a></li>
-        						<li><a href="https://list.asiandirectoryapp.com/c/ABAA001003">Wedding Venues</a></li>
-        						<li><a href="https://list.asiandirectoryapp.com/c/ABAA001022">Asian Jewellery</a></li>
-        						<li><a href="https://list.asiandirectoryapp.com/c/ABAA000305">Asian DJ</a></li>
-        						<li><a href="https://list.asiandirectoryapp.com/c/ABAA000406">Asian Restaurants</a></li>
+        						<li><a href="https://www.mailzion.com/c/AAAA001003">What's On</a></li>
+        						<li><a href="https://www.mailzion.com/c/ABAA000907">All-Round Builders</a></li>
+        						<li><a href="https://www.mailzion.com/c/ABAA001003">Wedding Venues</a></li>
+        						<li><a href="https://www.mailzion.com/c/ABAA001022">Asian Jewellery</a></li>
+        						<li><a href="https://www.mailzion.com/c/ABAA000305">Asian DJ</a></li>
+        						<li><a href="https://www.mailzion.com/c/ABAA000406">Asian Restaurants</a></li>
         					</ul>
         				</div>
         			</div>
@@ -281,10 +281,10 @@
 <!-- FOOTER COPYRIGHT AUTO MSD -->
             </div>
             <div class="footer-menu">
-                <a href="https://www.asiandirectoryapp.com/about/">About Us</a>
-                <a href="https://www.asiandirectoryapp.com/download/">Download</a>
-                <a href="https://www.asiandirectoryapp.com/contact/">Contact Us</a>
-                <a href="https://www.asiandirectoryapp.com/privacy-policy/">Privacy Policy</a>
+                <a href="<?php echo Yii::app()->createUrl('site/about'); ?>">About Us</a>
+                <a href="https://www.mailzion.com/">Download</a>
+                <a href="<?php echo Yii::app()->createUrl('site/contact'); ?>">Contact Us</a>
+                <a href="<?php echo Yii::app()->createUrl('site/privacyPolicy'); ?>">Privacy Policy</a>
 
             </div>          
             <div class="copyright">

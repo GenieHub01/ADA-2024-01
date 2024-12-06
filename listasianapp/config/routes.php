@@ -18,6 +18,7 @@ return [
     '<page:\d+>' => 'category/index',
     '' => 'category/index',
     'geo/regions' => 'geo/regions',
+  	'geo/getCountryId' => 'geo/getCountryId',
 
     //json api2
 //    'api1.1/<name:\w+>'=>

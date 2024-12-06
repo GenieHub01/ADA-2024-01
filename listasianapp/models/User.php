@@ -108,144 +108,154 @@ class User extends CActiveRecord
      * @return CActiveDataProvider the data provider that can return the models
      * based on the search/filter conditions.
      */
-    public function search()
-    {
-        // @todo Please modify the following code to remove attributes that should not be searched.
+   public function search()
+   {
+       // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria=new CDbCriteria;
+       $criteria=new CDbCriteria;
 
-        $criteria->compare('f_name',$this->f_name,true);
-        $criteria->compare('l_name',$this->l_name,true);
-        $criteria->compare('email',$this->email,true);
-        $criteria->compare('discount',$this->discount);
+       $criteria->compare('f_name',$this->f_name,true);
+       $criteria->compare('l_name',$this->l_name,true);
+       $criteria->compare('email',$this->email,true);
+       $criteria->compare('discount',$this->discount);
 
-        return new CActiveDataProvider($this, array(
-            'criteria'=>$criteria,
-            'pagination'=>[
-                'pageSize'=>Yii::app()->params->pageSize
-            ],
-            'sort' => [
-                'defaultOrder' => 'create_time DESC'
-            ]
-        ));
-    }
+       return new CActiveDataProvider($this, array(
+           'criteria'=>$criteria,
+           'pagination'=>[
+               'pageSize'=>Yii::app()->params->pageSize
+           ],
+           'sort' => [
+               'defaultOrder' => 'create_time DESC'
+           ]
+       ));
+   }
 
-    /**
-     * Returns the static model of the specified AR class.
-     * Please note that you should have this exact method in all your CActiveRecord descendants!
-     * @param string $className active record class name.
-     * @return User the static model class
-     */
-    public static function model($className=__CLASS__)
-    {
-        return parent::model($className);
-    }
+   /**
+    * Returns the static model of the specified AR class.
+    * Please note that you should have this exact method in all your CActiveRecord descendants!
+    * @param string $className active record class name.
+    * @return User the static model class
+    */
+   public static function model($className=__CLASS__)
+   {
+       return parent::model($className);
+   }
 
-    public function behaviors()
-    {
-        return [
-            'CTimestampBehavior' => array(
-                'class' => 'zii.behaviors.CTimestampBehavior',
-                'updateAttribute' => null
-            ),
-        ];
-    }
+   public function behaviors()
+   {
+       return [
+           'CTimestampBehavior' => array(
+               'class' => 'zii.behaviors.CTimestampBehavior',
+               'updateAttribute' => null
+           ),
+       ];
+   }
 
-    public function beforeSave()
-    {
-        if (parent::beforeSave()) {
+   public function beforeSave()
+   {
+       if (parent::beforeSave()) {
 
-            if ($this->isNewRecord) {
-                $this->hash = CPasswordHelper::hashPassword($this->password);
-                $this->role = self::ROLE_USER;
-                $this->expiry = new CDbExpression('DATE_ADD(NOW(), INTERVAL 1 YEAR)');
-            } else {
-                if (!empty($this->password)) {
-                    $this->hash = CPasswordHelper::hashPassword($this->password);
-                }
-                if (!empty($this->expiry)) {
-                    $this->expiry = date('Y-m-d', strtotime($this->expiry));
-                }
-            }
+           if ($this->isNewRecord) {
+               $this->hash = CPasswordHelper::hashPassword($this->password);
+               $this->role = self::ROLE_USER;
+               $this->expiry = new CDbExpression('DATE_ADD(NOW(), INTERVAL 1 YEAR)');
+           } else {
+               if (!empty($this->password)) {
+                   $this->hash = CPasswordHelper::hashPassword($this->password);
+               }
+               if (!empty($this->expiry)) {
+                   $this->expiry = date('Y-m-d', strtotime($this->expiry));
+               }
+           }
 
-            return true;
-        } else {
-            return false;
-        }
-    }
+           return true;
+       } else {
+           return false;
+       }
+   }
 
-    public function afterSave()
-    {
-        parent::afterSave();
+   public function afterSave()
+   {
+       parent::afterSave();
 
-        if (!YII_DEBUG && $this->isNewRecord) {
-            Mail::prepare('signups', null, $this->id);
-        }
+       if (!YII_DEBUG && $this->isNewRecord) {
+           Mail::prepare('signups', null, $this->id);
+       }
 
-    }
+   }
 
-    public function newPassword($email)
-    {
-        $user = $this->findByAttributes(['email'=>$email]);
+   public function newPassword($email)
+   {
+       $user = $this->findByAttributes(['email'=>$email]);
 
-        if (!$user) return;
+       if (!$user) return;
 
-        $password = substr( md5(uniqid('')), 0, 6);
+       $password = substr( md5(uniqid('')), 0, 6);
 
-        $user->hash = CPasswordHelper::hashPassword($password);
-        $user->save(false);
+       $user->hash = CPasswordHelper::hashPassword($password);
+       $user->save(false);
 
-        $body = Yii::app()->controller->renderPartial(
-            '/emails/newPassword',
-            [
-                'password'=>$password
-            ],
-            true
-        );
+      $body = Yii::app()->controller->renderPartial(
+          '/emails/newPassword',
+          [
+              'password'=>$password
+          ],
+          true
+       );
 
-        Mail::send($user->email, 'New password', $body);
-    }
+       Mail::send($user->email, 'New password', $body);
+   }
 
-    public function socialLogin($provider)
-    {
-        try {
+   public function socialLogin($provider)
+   {
+       Yii::log("Initiating social login for provider: $provider", CLogger::LEVEL_INFO);
 
-            $hybridauth = new Hybrid_Auth(Yii::getPathOfAlias('application.config') . '/providers.php');
-            $adapter = $hybridauth->authenticate($provider);
-            $user_profile = $adapter->getUserProfile();
+       try {
+           $hybridauth = new Hybrid_Auth(Yii::getPathOfAlias('application.config') . '/providers.php');
+           $adapter = $hybridauth->authenticate($provider);
+     	   Yii::log('HybridAuth profile: ' . print_r($adapter->getUserProfile(), true), CLogger::LEVEL_INFO);
 
-            if (empty($user_profile->email)) {
-                throw new Exception("Unable to retrieve user email from {$provider}");
-            }
-    
-            $email = $user_profile->email;
-            $user = User::model()->findByAttributes(['email' => $email]);
+           // Log access token
+           $accessToken = $adapter->getAccessToken();
+           Yii::log("Access Token: " . print_r($accessToken, true), CLogger::LEVEL_INFO);
 
-            if (!$user) {
-                $user = new User;
-                $user->email = $email;
-                $user->username = $user_profile->displayName;
-                $user->password = '';
-                $user->save(false);
-            }
+           // Fetch user profile
+           $user_profile = $adapter->getUserProfile();
+           Yii::log("User profile received: " . print_r($user_profile, true), CLogger::LEVEL_INFO);
 
-            $identity = new HybridAuthIdentity($user->email);
-            Yii::app()->user->login($identity);
+           if (empty($user_profile->email)) {
+               throw new Exception("Unable to retrieve user email from $provider.");
+           }
 
-        } catch (Exception $ex) {
-            Yii::log("Social login failed: " . $ex->getMessage(), CLogger::LEVEL_ERROR);
-            throw $ex;
-        }    
-    }
+           $email = $user_profile->email;
+           $user = User::model()->findByAttributes(['email' => $email]);
 
-    public function getList()
-    {
-        $dependency = new CDbCacheDependency('SELECT COUNT(id) FROM User');
-        return CHtml::listData($this->cache(Yii::app()->params->cacheTime, $dependency)->findAll(), 'id', 'email');
-    }
+           if (!$user) {
+               $user = new User;
+               $user->email = $email;
+               $user->password = ''; // No password for social login
+               $user->save(false);
+               Yii::log("New user created with email: $email", CLogger::LEVEL_INFO);
+           }
 
-    public function getName()
-    {
-        return $this->f_name . ' ' . $this->l_name;
-    }
+           $identity = new HybridAuthIdentity($user->email);
+           Yii::app()->user->login($identity);
+           Yii::log("User successfully logged in: $email", CLogger::LEVEL_INFO);
+
+       } catch (Exception $e) {
+           Yii::log("Social login failed: " . $e->getMessage(), CLogger::LEVEL_ERROR);
+           throw $e;
+       }
+   }
+
+   public function getList()
+   {
+       $dependency = new CDbCacheDependency('SELECT COUNT(id) FROM User');
+       return CHtml::listData($this->cache(Yii::app()->params->cacheTime, $dependency)->findAll(), 'id', 'email');
+   }
+
+   public function getName()
+   {
+       return $this->f_name . ' ' . $this->l_name;
+   }
 }

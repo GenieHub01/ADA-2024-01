@@ -29,8 +29,8 @@
  * @property float $lat
  * @property float $lng
  * @property string $category
- * @property integer $country_id
- * @property integer $region_id
+ * @property string $country_id
+ * @property string $region_id
  * @property integer $sub_region_id
  * @property integer $city_id
  * @property string $country_name
@@ -61,6 +61,11 @@ class Advert extends CActiveRecord
 
     private $_categoryList;
 
+    private $_countryList;
+
+    private $_regionList;
+    
+    private $_cityList;
 
     public $advertTypes = [
         'silver' => 'seo1',
@@ -101,6 +106,75 @@ class Advert extends CActiveRecord
     {
         $this->_categoryList = $value;
     }
+
+    public function getCountryList()
+    {
+        if (!$this->_countryList) {
+            $this->_countryList = CHtml::listData(Geo::getCountryData(), 'country_id', 'country_name');
+        }
+        return $this->_countryList;
+    }
+
+    public function setCountryList($value)
+    {
+        $this->_countryList = $value;
+    }
+
+    public function getRegionList()
+    {
+        if (!$this->_regionList && !empty($this->country_id)) {
+            try {
+                $regionData = Geo::getRegionData(null, $this->country_id);
+                if ($regionData) {
+                    $this->_regionList = CHtml::listData($regionData, 'region_id', 'region_name');
+                } else {
+                    Yii::log("No regions found for country_id: {$this->country_id}", CLogger::LEVEL_WARNING);
+                    $this->_regionList = [];
+                }
+            } catch (Exception $e) {
+                Yii::log("Error fetching regions for country_id: {$this->country_id} - " . $e->getMessage(), CLogger::LEVEL_ERROR);
+                $this->_regionList = [];
+            }
+        }
+
+        return !empty($this->_regionList) ? $this->_regionList : [];
+    }
+
+    public function setRegionList($value)
+    {
+        $this->_regionList = $value;
+    }
+
+    public function getCityList()
+    {
+        if (!$this->_cityList && !empty($this->region_id)) {
+            // Yii::log("Fetching city list for region_id: {$this->region_id}", CLogger::LEVEL_INFO);
+
+            try {
+                $cityData = Geo::getCityData(null, $this->region_id);
+                if (!empty($cityData)) {
+                    $this->_cityList = CHtml::listData($cityData, 'city_id', 'city_name');
+                    // Yii::log("City list fetched successfully for region_id: {$this->region_id}.", CLogger::LEVEL_INFO);
+                } else {
+                    Yii::log("No cities found for region_id: {$this->region_id}", CLogger::LEVEL_WARNING);
+                    $this->_cityList = [];
+                }
+            } catch (Exception $e) {
+                Yii::log("Error fetching cities for region_id: {$this->region_id} - " . $e->getMessage(), CLogger::LEVEL_ERROR);
+                $this->_cityList = [];
+            }
+        } else {
+            // Yii::log("City list already populated for region_id: {$this->region_id}.", CLogger::LEVEL_INFO);
+        }
+
+        return !empty($this->_cityList) ? $this->_cityList : [];
+    }
+
+    public function setCityList($value)
+    {
+        $this->_cityList = $value;
+    }
+
     /**
      * @return string the associated database table name
      */
@@ -118,34 +192,40 @@ class Advert extends CActiveRecord
         // will receive user inputs.
         return [
             // Required fields
-            ['name, address, postcode, telephone, description, country, region, category_id', 'required'],
+            ['name, address, postcode, telephone, description, country_name, region, category_id, city_name', 'required'],
             ['categoryList', 'required', 'message' => 'Please select at least one subcategory.'],
-
-            // Default values for fields
-            ['country', 'default', 'value' => 'United Kingdom'],
-
+        
             // Numerical validation
-            ['category_id, country_id, region_id, city_id, sub_region_id, package, active, paid, rating', 'numerical', 'integerOnly' => true],
+            ['category_id, city_id, sub_region_id, package, active, paid, rating', 'numerical', 'integerOnly' => true],
             ['lat, lng', 'numerical'],
 
+            // Ensure geo IDs are safe for both update and create
+            ['country_id, region_id, city_id', 'safe', 'on' => ['update', 'create']],
+        
             // Length validation
             ['name, manager_name, email', 'length', 'max' => 100],
             ['address, web, previewFile, seo_keywords, seo_description', 'length', 'max' => 200],
             ['postcode, telephone, fax, mobile, country, region', 'length', 'max' => 20],
-
+            ['country_id, region_id', 'length', 'max' => 10],
+        
             // File validation
             ['file', 'file', 'types' => 'jpg, jpeg, png, gif', 'allowEmpty' => true, 'maxSize' => 2 * 1024 * 1024],
-
+        
             // URL and Email validation
             ['email', 'email'],
             ['web, facebook_url, twitter_url, instagram_url, gplus_url, youtube_url, pinterest_url', 'url', 'defaultScheme' => 'http'],
-
-            // Safe attributes for specific scenarios
+        
+            // Safe attributes for admin scenario
             ['package, active, paid, expiry_date, user_id', 'safe', 'on' => 'admin'],
             ['rating', 'numerical', 'integerOnly' => true, 'on' => 'admin', 'min' => 0, 'max' => 5],
 
-            // Attributes for search
+            // Search scenario safe attributes
             ['id, user_id, name, manager_name, mobile, telephone, web, email, rating, seo1, seo2, start_date, expiry_date, active, paid', 'safe', 'on' => 'search'],
+            
+            // Additional attributes
+            ['city_name, region', 'safe'],
+            ['active', 'default', 'value' => 0],
+            ['active', 'in', 'range' => [0, 1], 'message' => 'Active must be 0 or 1.'],
         ];
     }
 
@@ -161,7 +241,9 @@ class Advert extends CActiveRecord
             'category'    => [self::BELONGS_TO, 'Category', 'category_id'],
             'user'        => [self::BELONGS_TO, 'User', 'user_id'],
             'price'       => [self::BELONGS_TO, 'Price', 'package'],
-            // 'subRegion'   => [self::BELONGS_TO, 'SubRegion', 'sub_region_id']
+            'country' 	  => [self::BELONGS_TO, 'Country', 'country_id'],
+            'region' 	  => [self::BELONGS_TO, 'Region', 'region_id'],
+            'city' 		  => [self::BELONGS_TO, 'City', 'city_id'],
         );
     }
 
@@ -260,13 +342,15 @@ class Advert extends CActiveRecord
         return parent::model($className);
     }
 
+    /**
+     * Update beforeSave method to fetch country, region, and city data dynamically.
+     */
     public function beforeSave()
     {
-        Yii::log('Country value in beforeSave: ' . $this->country, CLogger::LEVEL_INFO);
+        // Yii::log('Country value in beforeSave: ' . $this->country, CLogger::LEVEL_INFO);
         if (parent::beforeSave()) {
-            
-            Yii::log('beforeSave called', CLogger::LEVEL_INFO);
-
+            // Yii::log('beforeSave called', CLogger::LEVEL_INFO);
+        
             if ($this->isNewRecord) {
                 if (empty($this->expiry_date)) {
                     $this->expiry_date = new CDbExpression('DATE_ADD(NOW(), INTERVAL 1 YEAR)');
@@ -283,36 +367,15 @@ class Advert extends CActiveRecord
                     $this->setPackage();
                 }
             }
+        
+            $this->fetchGeoData();
 
-            // Log country and region data
-            Yii::log('Country: ' . $this->country, CLogger::LEVEL_INFO);
-            Yii::log('Region: ' . $this->region, CLogger::LEVEL_INFO);
+            // Yii::log("Final Geo Data - Country ID: {$this->country_id}, Region ID: {$this->region_id}, City ID: {$this->city_id}", CLogger::LEVEL_INFO);
 
-            $countryData = Geo::getCountryData('United Kingdom');
-            if ($countryData) {
-                $this->country_id = $countryData['country_id'];
-                $this->country_name = $countryData['country_name'];
-            }
-
-            $regionData = Geo::getRegionData($this->region, $this->country_id);
-            if ($regionData) {
-                $this->region_id = $regionData['region_id'];
-                $this->region = $regionData['region_code'];
-            } else {
-                Yii::log('Region not found, setting default value', CLogger::LEVEL_WARNING);
-                $this->region_id = null;
-                $this->region = 'Unknown Region';
-            }
-
-            $cityData = Geo::getCityData($this->city_name, $this->country_id, $this->region_id);
-            if ($cityData) {
-                $this->city_id = $cityData['city_id'];
-                $this->city_name = $cityData['city_name'];
-            } else {
-                Yii::log('City not found, setting default value', CLogger::LEVEL_WARNING);
-                $this->city_id = null;
-                $this->city_name = 'Unknown City';
-            }
+            if (empty($this->country_id) || empty($this->region_id) || empty($this->city_id)) {
+                Yii::log("Required geo fields are missing - Country ID: {$this->country_id}, Region ID: {$this->region_id}, City ID: {$this->city_id}", CLogger::LEVEL_ERROR);
+                return false;
+            }                      
 
             // Get coordinates if not set
             if (empty($this->lat) || empty($this->lng)) {
@@ -326,13 +389,67 @@ class Advert extends CActiveRecord
             }
 
             // Log image save status
-            Yii::log('Saving image', CLogger::LEVEL_INFO);
+            // Yii::log('Saving image', CLogger::LEVEL_INFO);
             $this->saveImage();
 
             return true;
         } else {
             Yii::log('parent::beforeSave returned false', CLogger::LEVEL_ERROR);
             return false;
+        }
+    }
+
+    private function fetchGeoData()
+    {
+        // Fetch country data
+        if (!empty($this->country_name)) {
+            $countryData = Geo::getCountryData($this->country_name);
+            if ($countryData) {
+                $this->country_id = $countryData['country_id']; // Assign ISO as country_id
+                // Yii::log("Fetched country_id: {$this->country_id} for country_name: {$this->country_name}", CLogger::LEVEL_INFO);
+            } else {
+                $this->country_id = null;
+                Yii::log("Invalid country_name: {$this->country_name}", CLogger::LEVEL_WARNING);
+                return; // Stop further execution if country data is invalid
+            }
+        }
+
+        // Fetch region data
+        if (!empty($this->region_id) && !empty($this->country_id)) {
+            $regionData = Geo::getRegionData($this->region_id, $this->country_id);
+            if ($regionData && isset($regionData['region_name'])) {
+                $this->region = $regionData['region_name'];
+                // Yii::log("Fetched region_name: {$this->region} for region_id: {$this->region_id}", CLogger::LEVEL_INFO);
+            } else {
+                $this->region_id = null;
+                Yii::log("Invalid region_id: {$this->region_id} for country_iso: {$this->country_id}", CLogger::LEVEL_WARNING);
+                return; // Stop execution if region data is invalid
+            }
+        } else {
+            Yii::log("Region ID or Country ID is missing.", CLogger::LEVEL_ERROR);
+            $this->region_id = null;
+            return; // Stop further execution if region is missing
+        }
+
+        // Fetch city data
+        if (!empty($this->city_id) && !empty($this->region_id)) {
+            $cityData = Geo::getCityData($this->city_id, $this->region_id);
+            if ($cityData) {
+                $this->city_name = $cityData['city_name'];
+                // Yii::log("Fetched city_name: {$this->city_name} for city_id: {$this->city_id}", CLogger::LEVEL_INFO);
+            } else {
+                $this->city_id = null;
+                Yii::log("Invalid city_id: {$this->city_id} for region_id: {$this->region_id}", CLogger::LEVEL_WARNING);
+            }
+        } elseif (!empty($this->city_name) && !empty($this->region_id)) {
+            $cityData = Geo::getCityData($this->city_name, $this->region_id);
+            if ($cityData) {
+                $this->city_id = $cityData['city_id'];
+                // Yii::log("Fetched city_id: {$this->city_id} for city_name: {$this->city_name}", CLogger::LEVEL_INFO);
+            } else {
+                $this->city_id = null;
+                Yii::log("Invalid city_name: {$this->city_name} for region_id: {$this->region_id}", CLogger::LEVEL_WARNING);
+            }
         }
     }
 
@@ -464,7 +581,7 @@ class Advert extends CActiveRecord
     {
         parent::afterDelete();
         $this->deleteImage();
-        Yii::log("Advert deleted: {$this->id}", CLogger::LEVEL_INFO);
+        // Yii::log("Advert deleted: {$this->id}", CLogger::LEVEL_INFO);
         Yii::app()->cache->delete(__CLASS__ . $this->id);
     }
 

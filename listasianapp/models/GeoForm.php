@@ -10,14 +10,14 @@ class GeoForm extends CFormModel
 {
     public $country_id;
     public $region_id;
-    public $sub_region_id;
+  	public $sub_region_id;
 
     public function attributeLabels()
     {
         return [
             'country_id' => 'Country',
             'region_id' => 'Region',
-            'sub_region_id' => 'Sub region'
+          	'sub_region_id' => 'Sub region'
         ];
     }
 

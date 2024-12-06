@@ -93,14 +93,14 @@ Yii::app()->clientScript->registerScriptFile('/js/category.js');
 								<label for="wide-search-submit">Search</label>
 								<?php 
 									echo CHtml::submitButton('START');
-										$this->widget(
-											'booster.widgets.TbButton',
-												[
-													'buttonType' => 'button',
-													'label' => 'GEO',
-													'id' => 'bGeo'
-												]
-										);
+										// $this->widget(
+										// 	'booster.widgets.TbButton',
+										// 		[
+										// 			'buttonType' => 'button',
+										// 			'label' => 'GEO',
+										// 			'id' => 'bGeo'
+										// 		]
+										// );
 									$this->endWidget();
 								?>
 							</div>

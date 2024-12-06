@@ -34,15 +34,9 @@ $this->pageTitle=Yii::app()->name . ' - Login';
         echo '<br>';
         echo CHtml::link('Forgot your password?', ['restore'], ['class' => 'login-forgot']);
 
-        $googleAuthUrl = Yii::app()->createAbsoluteUrl('site/login', ['provider' => 'Google']);
+        $this->widget('LoginSocial');
+
+        $this->endWidget();
     ?>
 
-    <br>
-    <div>
-    <a href="<?php echo htmlspecialchars($googleAuthUrl, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-danger">
-        <i class="fa fa-google"></i> Login with Google
-    </a>
-</div>
-
-    <?php $this->endWidget(); ?>
 </div>
